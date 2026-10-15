@@ -5,31 +5,22 @@ description: Use when studying a user-provided technical PDF in this project, es
 
 # Read technical PDFs for deep understanding
 
-Turn a supplied technical book or document into Vietnamese Markdown study notes. For DDIA, prioritize distributed systems, database internals, and system design reasoning. Explain concepts and decisions, not language-specific implementation or framework usage.
+Create source-grounded Vietnamese study material from a technical PDF. The skill supplies a reusable reading method; each project's `README.md` and `init/DETAIL.md` specify the actual source, deliverables, depth, and scope.
 
-## Establish the source
+When setting up a new project, create its `README.md` and `init/` first. Keep the original user-provided source files in `init/` without altering them, and write the project's concrete generation request in `init/DETAIL.md`. If a source has not been supplied, record that gap rather than inventing or replacing it.
 
-1. Locate the PDF the user supplied in the relevant project folder. Inspect its title/copyright pages and table of contents to identify the edition, chapter structure, and PDF page numbering. Distinguish printed page numbers from PDF page indices when they differ.
-2. If the source or a required page is unavailable or unreadable, state exactly what is missing and continue only with work supported by the available pages. Never infer an edition, heading, argument, or quotation from memory.
-3. Use the supplied book as the primary source. When outside knowledge helps explain a point, label it **Bổ sung ngoài sách**. Label invented teaching examples **Ví dụ minh họa do AI xây dựng**. Paraphrase in natural Vietnamese; do not reproduce long passages.
-4. Record page or section references for substantive claims where the source permits. For a scanned PDF, inspect the actual page image when text extraction is unreliable, including figures and tables.
+## Project context comes first
 
-## Write in source order
+1. Identify the project folder named in the request. **Before reading the PDF or generating notes, read that folder's `README.md`.** For DDIA, this is `DDIA/README.md`.
+2. Follow the README to `init/DETAIL.md` (or the project's explicitly named requirements file) and read it in full. Inspect the original source files in `init/` identified there. The project detail is required even when this skill already describes the topic.
+3. If the README, detail, or source is missing or ambiguous, report the exact gap and complete only work supported by the available material. Do not substitute generic skill instructions for missing project requirements.
 
-For DDIA, store notes under `DDIA/ddia-notes/`: `README.md`, `glossary.md`, `chapter-XX.md`, and `system-design-concepts.md`. Split an unusually long chapter by its actual sections when useful, and link the parts from the notes README. Keep the book PDF outside the generated notes.
+## Verify and explain the source
 
-Start by recording the verified edition and table of contents in the notes README. Then write the first chapter, or the specific chapter or section the user requested. Finish and check that unit before moving to another; do not generate the entire book in one pass without a new request.
+Inspect the PDF's title/copyright pages and table of contents to establish its edition, chapter structure, and page numbering. Distinguish printed page numbers from PDF page indices. For scanned pages or unreliable extraction, inspect page images, figures, and tables. Never infer an edition, heading, argument, or quotation from memory.
 
-For each chapter, provide:
+Use the supplied PDF as the primary source and cite pages or sections for substantive claims where possible. Paraphrase in natural Vietnamese rather than copying long passages. Label outside explanations **Bổ sung ngoài sách** and invented examples **Ví dụ minh họa do AI xây dựng**.
 
-- **Tổng quan:** the chapter's question, purpose, and connection to earlier chapters.
-- **Giải thích theo mục sách:** follow the author's headings and reasoning, including difficult steps. For each important concept, explain **What** (definition and English terminology), **Why** (origin of the problem and limits of alternatives), **How** (mechanism and data flow), **Example** (simple then realistic), **Trade-offs**, and **System Design Perspective**. Adjust depth to the concept instead of filling a rigid form mechanically.
-- **Sơ đồ và so sánh:** use Mermaid only when it clarifies architecture, data flow, process, or relationships. When the book compares approaches, include a table of mechanism, advantages, limitations, trade-offs, and suitable conditions.
-- **Tư duy thiết kế:** show how requirements and constraints change a decision through concrete scenarios.
-- **Kiến thức cốt lõi** and **5–10 câu hỏi tự kiểm tra**, favoring why, what-if, and comparison questions. Put explained answers in a separate section or linked file so readers can attempt the questions first.
+Follow the project's requested output structure and the source's order of reasoning. For DDIA, `DDIA/init/DETAIL.md` defines the chapter-note format, conceptual depth, self-check questions, and incremental chapter scope. Explain What, Why, How, examples, trade-offs, and system design decisions where they help the reader understand the concept; use Mermaid and comparison tables when useful.
 
-Update the glossary and cross-chapter system-design index as relevant concepts appear. Define unfamiliar terms in Vietnamese while retaining their English names; connect new ideas to concepts already covered. Write enough for understanding without a fixed length target or code examples.
-
-## Check before finishing
-
-Compare the notes against the verified source outline and pages for the requested unit. Check the author's argument, technical accuracy, terminology, internal links, diagrams, and the labels for outside knowledge and invented examples. Report any source gaps or unverified details explicitly.
+Before finishing, compare the requested unit against its source outline and `init/DETAIL.md`. Check technical accuracy, omitted arguments, terminology, links, and labels. State any unverified details or unreadable pages.

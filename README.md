@@ -6,14 +6,14 @@ Kho tài liệu học bằng tiếng Việt từ sách và tài liệu kỹ thu�
 
 | Thư mục | Mục đích | Trạng thái |
 | --- | --- | --- |
-| [DDIA](DDIA/README.md) | Học *Designing Data-Intensive Applications* của Martin Kleppmann và tư duy về hệ thống dữ liệu. | Đã tạo cấu trúc dự án; chưa có PDF sách để xác định ấn bản và viết ghi chú. |
+| [DDIA](DDIA/README.md) | Học *Designing Data-Intensive Applications* của Martin Kleppmann và tư duy về hệ thống dữ liệu. | Đã có PDF gốc và yêu cầu đầu vào; chưa xác minh ấn bản hoặc tạo ghi chú. |
 
-Thêm dự án mới bằng một thư mục riêng cùng README mô tả nguồn tài liệu, mục tiêu học và tình trạng ghi chú.
+Mỗi dự án mới cần một thư mục riêng gồm `README.md` mô tả dự án và `init/` chứa **tệp nguồn gốc** cùng `DETAIL.md` ghi rõ cần tạo những gì, phạm vi, mức độ chi tiết và định dạng đầu ra. Skill là quy trình dùng chung; `DETAIL.md` là yêu cầu cụ thể của từng dự án.
 
 ## Skill dùng trong dự án
 
 | Skill | Mục đích | Vị trí |
 | --- | --- | --- |
-| `read-doc-pdf` | Đọc PDF kỹ thuật đã cung cấp; xác minh phiên bản và mục lục; viết ghi chú tiếng Việt theo chương với ví dụ, đánh đổi và góc nhìn System Design. | [.agents/skills/read-doc-pdf/SKILL.md](.agents/skills/read-doc-pdf/SKILL.md) |
+| `read-doc-pdf` | Đọc `README.md` và `init/DETAIL.md` của dự án trước, rồi kiểm tra PDF nguồn và tạo tài liệu tiếng Việt theo yêu cầu riêng của dự án. | [.agents/skills/read-doc-pdf/SKILL.md](.agents/skills/read-doc-pdf/SKILL.md) |
 
-Trong Codex, gọi skill bằng `$read-doc-pdf` khi đã cung cấp PDF và chỉ rõ chương hoặc mục muốn học. Tên skill dùng dấu gạch nối theo quy ước của Codex; đây là skill cho nhu cầu `/read_doc_pdf` nêu trong yêu cầu dự án.
+Trong Codex, gọi skill bằng `$read-doc-pdf` và nêu dự án, chương hoặc mục cần học. Skill sẽ đọc README của dự án, yêu cầu trong `init/DETAIL.md` và tệp gốc trước khi viết. Tên skill dùng dấu gạch nối theo quy ước của Codex; đây là skill cho nhu cầu `/read_doc_pdf` nêu trong yêu cầu dự án.
