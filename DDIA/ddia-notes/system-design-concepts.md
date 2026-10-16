@@ -2,7 +2,7 @@
 
 Tệp này gom các nguyên lý System Design rút ra từ từng chương và liên kết về phần giải thích chi tiết. Mỗi nguyên lý ghi rõ nguồn trong sách (trang in, ấn bản thứ nhất 2017). Cột "Sẽ gặp lại" chỉ dựa trên tham chiếu chéo và mục lục của sách. Nội dung các chương đó sẽ được kiểm chứng khi học tới.
 
-Đã cập nhật đến: **Chương 4**.
+Đã cập nhật đến: **Chương 5** (kèm phần giới thiệu Part II).
 
 ## Bản đồ tổng quan
 
@@ -25,6 +25,11 @@ flowchart LR
     EN["Mã hóa và tiến hóa<br/>(chương 4)"] --> P30["P30–P33<br/>Tương thích, schema"]
     EN --> P34["P34–P37<br/>Luồng dữ liệu"]
     P30 -.->|"điều kiện để"| P14
+    RP["Nhân bản<br/>(chương 5)"] --> P38["P38–P41<br/>Phân tán, single-leader"]
+    RP --> P42["P42<br/>Replication lag"]
+    RP --> P43["P43–P47<br/>Multi-leader, leaderless,<br/>xung đột"]
+    P38 -.->|"logical log dựa trên<br/>tương thích"| P30
+    P43 -.->|"P46: đo staleness<br/>giống P9"| P6
 ```
 
 ## Chương 1 — Reliable, Scalable, and Maintainable Applications
@@ -46,7 +51,7 @@ flowchart LR
 
 **P3. Ở quy mô lớn, hãy chịu được việc mất cả một máy.** Phần cứng hỏng liên tục khi có nhiều máy, và máy ảo cloud có thể biến mất không báo trước. Chịu lỗi bằng phần mềm còn cho phép rolling upgrade không downtime.
 - Nguồn: tr. 7–8 · [chapter-01 B3.2](chapter-01.md#b3)
-- Sẽ gặp lại: rolling upgrade ở Chương 4 (tr. 8); "Handling Node Outages", Chương 5 (tr. 156), theo mục lục
+- Sẽ gặp lại: rolling upgrade ở Chương 4 (tr. 8); "Handling Node Outages", Chương 5 (tr. 156): [chapter-05 B1.3](chapter-05.md#node-outages)
 
 **P4. Cảnh giác với lỗi tương quan.** Lỗi phần mềm có tính hệ thống xảy ra trên mọi node cùng lúc. Thêm bản sao không bảo vệ được trước chúng. Cần test, cô lập, crash-restart, giám sát, và tự kiểm tra các đảm bảo trong lúc chạy.
 - Nguồn: tr. 8–9 · [chapter-01 B3.3](chapter-01.md#b3)
@@ -83,7 +88,7 @@ flowchart LR
 - Elastic hợp với tải khó dự đoán. Scale thủ công đơn giản hơn.
 - Với sản phẩm giai đoạn đầu, lặp nhanh quan trọng hơn scale cho tải giả định.
 - Nguồn: tr. 17–18 · [chapter-01 B4.3](chapter-01.md#coping-with-load), [D5](chapter-01.md#d5), [D6](chapter-01.md#d6)
-- Sẽ gặp lại: Part II (dữ liệu phân tán); "Rebalancing Partitions", Chương 6 (tr. 209)
+- Sẽ gặp lại: Part II (dữ liệu phân tán, [chapter-05 mục 0](chapter-05.md#part-ii), P38); "Rebalancing Partitions", Chương 6 (tr. 209)
 
 ### Maintainability — Vận hành, đơn giản, tiến hóa
 
@@ -143,7 +148,7 @@ flowchart LR
 
 **P23. Biến ghi ngẫu nhiên thành ghi tuần tự, và dùng dữ liệu bất biến để đơn giản hóa phục hồi.** Log chỉ ghi nối thêm và segment bất biến cho throughput ghi cao, phục hồi crash và đồng thời đơn giản, không phân mảnh. Cái giá là phải compaction và merge ở nền.
 - Nguồn: tr. 75, 103 · [chapter-03 B2.4](chapter-03.md#append-only), [B3](chapter-03.md#b3)
-- Sẽ gặp lại: log trong replication (Chương 5) và event log (Chương 11), theo Glossary tr. 556
+- Sẽ gặp lại: log trong replication ([chapter-05 B1.4](chapter-05.md#replication-logs), P41); event log (Chương 11), theo Glossary tr. 556
 
 **P24. Ghi trước vào log rồi mới sửa cấu trúc chính.** Memtable của LSM-tree và page của B-tree đều có thể mất hoặc hỏng khi crash; một log chỉ ghi nối thêm (log phục hồi memtable, WAL của B-tree) cho phép dựng lại trạng thái nhất quán.
 - Nguồn: tr. 78, 82 · [chapter-03 B3.2](chapter-03.md#memtable), [B4.3](chapter-03.md#wal)
@@ -199,3 +204,52 @@ flowchart LR
 **P37. Dùng message broker để tách rời và tăng độ tin cậy giữa các thành phần.** Broker đệm khi bên nhận chết hay quá tải, gửi lại message, cho một message tới nhiều consumer, và người gửi không cần biết địa chỉ người nhận. Giao tiếp một chiều, bất đồng bộ; cần tương thích cả hai chiều để đổi producer và consumer theo thứ tự bất kỳ.
 - Nguồn: tr. 136–139 · [chapter-04 B7.3](chapter-04.md#message-passing), [D7](chapter-04.md#d-so-sanh)
 - Sẽ gặp lại: so sánh message broker và nối chuỗi topic, Chương 11
+
+## Chương 5 — Replication
+
+### Phân tán dữ liệu (phần giới thiệu Part II)
+
+**P38. Chỉ phân tán khi cần, và hiểu cái giá của shared-nothing.** Phân tán ra nhiều máy vì scalability, fault tolerance hoặc latency. Scale up đắt hơn tuyến tính và chỉ ở một nơi; shared-nothing chạy trên phần cứng thường, trải được nhiều vùng, nhưng thêm độ phức tạp, có thể giới hạn mô hình dữ liệu, và database không che giấu được các trade-off. Có khi một chương trình đơn luồng nhanh hơn cả một cluster.
+- Nguồn: tr. 145–147 · [chapter-05 mục 0](chapter-05.md#part-ii), [0.2](chapter-05.md#shared-nothing)
+- Sẽ gặp lại: partitioning (Chương 6), giới hạn của hệ phân tán (Chương 8, 9), theo tr. 148
+
+### Single-leader replication
+
+**P39. Chọn chế độ đồng bộ theo yêu cầu durability.** Đồng bộ với mọi follower là không thực tế, vì một node hỏng là dừng ghi. Semi-synchronous (một follower đồng bộ) bảo đảm dữ liệu có trên ít nhất hai node. Hoàn toàn bất đồng bộ luôn ghi được nhưng phải chấp nhận mất ghi đã xác nhận khi leader hỏng.
+- Nguồn: tr. 153–155 · [chapter-05 B1.1](chapter-05.md#sync-async), [D2](chapter-05.md#d2)
+- Sẽ gặp lại: consensus, Chương 9 (tr. 155)
+
+**P40. Coi failover là thao tác nguy hiểm, và thiết kế để nó an toàn.** Timeout quá ngắn gây failover không cần thiết lúc quá tải; chọn replica mới nhất; dùng fencing chống split brain; cẩn thận khi hệ thống ngoài dùng key do database sinh (sự cố GitHub). Failover thủ công là lựa chọn hợp lý.
+- Nguồn: tr. 156–158 · [chapter-05 B1.3](chapter-05.md#failover), [E2](chapter-05.md#e-system-design)
+- Sẽ gặp lại: "The leader and the lock", Chương 8 (tr. 301); consensus, Chương 9
+
+**P41. Tách replication log khỏi storage engine.** Logical (row-based) log giữ được backward compatibility giữa các phiên bản (P30), nên cho phép nâng cấp không downtime (nâng cấp follower rồi failover), và dễ parse cho change data capture. WAL shipping gắn chặt với định dạng lưu trữ; statement-based hỏng với hàm không tất định.
+- Nguồn: tr. 158–161 · [chapter-05 B1.4](chapter-05.md#replication-logs), [D3](chapter-05.md#d3)
+- Sẽ gặp lại: change data capture, Chương 11 (tr. 161)
+
+### Replication lag
+
+**P42. Thiết kế cho trường hợp lag lên vài phút, và chọn rõ đảm bảo đọc cần có.** Eventual consistency không có giới hạn thời gian. Hãy hỏi ứng dụng hành xử thế nào khi lag lớn, rồi cài có chủ đích read-after-write, monotonic reads hoặc consistent prefix reads. Đừng giả vờ replication là đồng bộ; xử lý ở tầng ứng dụng thì phức tạp, nên transaction tồn tại để database làm việc đó.
+- Nguồn: tr. 161–167 · [chapter-05 B2](chapter-05.md#b2), [D4](chapter-05.md#d4), [E1](chapter-05.md#e-system-design)
+- Sẽ gặp lại: transaction, Chương 7 và 9; cơ chế thay thế ở Part III (tr. 167)
+
+### Multi-leader và leaderless replication
+
+**P43. Chỉ dùng multi-leader khi lợi ích đáng giá, và ưu tiên tránh xung đột.** Multi-leader hợp với nhiều datacenter, client offline và collaborative editing, nhưng là "vùng nguy hiểm" vì write conflict và các bẫy cấu hình. Ưu tiên conflict avoidance (mỗi bản ghi có leader nhà). Khi phải hội tụ, chọn cách không âm thầm mất dữ liệu: lưu mọi phiên bản, custom logic, CRDT hay OT. Xung đột có thể là vi phạm ràng buộc trên nhiều bản ghi.
+- Nguồn: tr. 168–175 · [chapter-05 B3.1](chapter-05.md#multi-leader-use-cases), [B3.2](chapter-05.md#write-conflicts), [D5](chapter-05.md#d5)
+- Sẽ gặp lại: thêm ví dụ xung đột ở Chương 7; phát hiện và giải quyết xung đột ở quy mô lớn ở Chương 12 (tr. 175)
+
+**P44. Sắp thứ tự sự kiện theo quan hệ nhân quả, không theo đồng hồ.** Message nhân bản có thể vượt nhau; đồng hồ các máy không đủ đồng bộ. "Đồng thời" nghĩa là không thao tác nào biết thao tác kia. Dùng version number hay version vector để phân biệt ghi đè với ghi đồng thời.
+- Nguồn: tr. 176–177, 186–191 · [chapter-05 B3.3](chapter-05.md#topologies), [B4.5](chapter-05.md#happens-before), [version vectors](chapter-05.md#version-vectors)
+- Sẽ gặp lại: đồng hồ không tin cậy, Chương 8 (tr. 287, 291); ordering, Chương 9
+
+**P45. Quorum là núm chỉnh xác suất, không phải bảo đảm tuyệt đối.** w + r > n làm tập ghi và tập đọc giao nhau, chịu được n − w node hỏng khi ghi và n − r khi đọc. Nhưng sloppy quorum, ghi đồng thời, ghi thất bại một phần và khôi phục từ replica cũ vẫn có thể trả giá trị stale, và quorum không cho read-your-writes hay monotonic reads. Sloppy quorum đổi consistency lấy write availability.
+- Nguồn: tr. 179–184 · [chapter-05 B4.2](chapter-05.md#quorums), [B4.3](chapter-05.md#quorum-limits), [B4.4](chapter-05.md#sloppy-quorum), [D7](chapter-05.md#d7)
+- Sẽ gặp lại: "Linearizability and quorums", Chương 9 (tr. 334)
+
+**P46. Định lượng được "eventual".** Giám sát replication lag (vị trí của leader trừ vị trí của follower) và staleness; với leaderless chỉ có read repair, giá trị ít đọc có thể cũ mãi, nên cần anti-entropy và phép đo riêng. Đây là áp dụng của P9 (đo cái người dùng thật sự gặp) cho replication.
+- Nguồn: tr. 179, 182–183 · [chapter-05 B4.3](chapter-05.md#monitoring-staleness), [read repair](chapter-05.md#read-repair)
+
+**P47. Không dùng last write wins cho dữ liệu không được mất.** LWW hội tụ bằng cách âm thầm bỏ các lần ghi đồng thời đã được báo thành công. Nếu không được mất dữ liệu, giữ siblings và gộp ở ứng dụng (cần tombstone cho thao tác xóa) hoặc dùng CRDT. Nếu dùng LWW, làm mỗi key chỉ ghi một lần rồi bất biến (ví dụ key là UUID).
+- Nguồn: tr. 173, 186, 190–191 · [chapter-05 B4.5](chapter-05.md#lww), [siblings](chapter-05.md#siblings), [E6](chapter-05.md#e-system-design)
+- Sẽ gặp lại: "Timestamps for ordering events", Chương 8 (tr. 291)

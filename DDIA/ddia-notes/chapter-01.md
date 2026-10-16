@@ -70,8 +70,8 @@ Bảng dưới chỉ dựa trên **tham chiếu chéo có trong chương 1** và
 | Hệ thống elastic và hệ thống mở rộng thủ công | "Rebalancing Partitions", Chương 6, tr. 209 | tr. 17 |
 | Ví dụ Twitter home timeline | Chương 12 | tr. 13 |
 | Hệ thống gồm nhiều thành phần như Hình 1-1 | Part III (chương 10–12) | tr. 23 |
-| Phân tán dữ liệu ra nhiều máy để mở rộng | Part II (chương 5–9) | Preface, tr. xvi |
-| Shared-nothing architecture | Phần giới thiệu Part II | Glossary, tr. 557 |
+| Phân tán dữ liệu ra nhiều máy để mở rộng | Part II (chương 5–9; [ghi chú phần mở đầu](chapter-05.md#part-ii)) | Preface, tr. xvi |
+| Shared-nothing architecture | Phần giới thiệu Part II ([chapter-05, mục 0.2](chapter-05.md#shared-nothing)) | Glossary, tr. 557 |
 
 ---
 
@@ -743,7 +743,7 @@ So sánh các thước đo: xem [D4](#d4).
   - Hệ thống chạy trên một máy thường **đơn giản hơn**, nhưng máy cao cấp có thể **rất đắt**. Vì vậy khối lượng công việc rất nặng thường **không tránh được** việc scale out.
   - Thực tế, kiến trúc tốt thường là **sự pha trộn thực dụng**. Ví dụ: dùng **vài máy khá mạnh** vẫn có thể đơn giản và rẻ hơn **rất nhiều máy ảo nhỏ**.
 
-> Glossary của sách (tr. 557) định nghĩa **shared-nothing** là kiến trúc trong đó các node độc lập, mỗi node có CPU, bộ nhớ, ổ đĩa riêng, kết nối qua mạng thông thường. Nó đối lập với kiến trúc shared-memory hoặc shared-disk. Chi tiết nằm ở phần giới thiệu Part II.
+> Glossary của sách (tr. 557) định nghĩa **shared-nothing** là kiến trúc trong đó các node độc lập, mỗi node có CPU, bộ nhớ, ổ đĩa riêng, kết nối qua mạng thông thường. Nó đối lập với kiến trúc shared-memory hoặc shared-disk. Chi tiết nằm ở phần giới thiệu Part II, xem [chapter-05, mục 0](chapter-05.md#shared-architectures).
 
 **3. Elastic và scale thủ công** (tr. 17)
 

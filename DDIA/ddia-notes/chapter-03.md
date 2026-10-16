@@ -75,7 +75,7 @@ flowchart TD
 | LSM-tree có độ trễ cao ở percentile cao | **Chương 1**: percentile, tail latency ([B4.2 chương 1](chapter-01.md#percentiles)) | tr. 85 |
 | Secondary index giúp join hiệu quả, ví dụ index trên `user_id` ở Hình 2-1 | **Chương 2**: hồ sơ LinkedIn ([B2.2 chương 2](chapter-02.md#impedance-mismatch)) | tr. 86 |
 | Column-family của Bigtable vẫn chủ yếu là lưu theo hàng | **Chương 2**: locality ([B2.5 chương 2](chapter-02.md#locality)) | tr. 99 |
-| Sort order và lưu nhiều bản sao dữ liệu | **Chương 5** — Replication (dữ liệu được nhân bản để chịu lỗi) | tr. 100 |
+| Sort order và lưu nhiều bản sao dữ liệu | **Chương 5** — Replication (dữ liệu được nhân bản để chịu lỗi; [chapter-05.md](chapter-05.md)) | tr. 100 |
 | Hash dùng để chia partition, secondary index khi partition | **Chương 6** — Partitioning | Glossary tr. 555, 557 |
 | ACID, khóa theo khoảng key, snapshot isolation | **Chương 7** — Transactions | tr. 82–83, 85, 90 |
 | Batch processing, materialization trạng thái trung gian | **Chương 10** | tr. 90; Glossary tr. 556 |

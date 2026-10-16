@@ -43,7 +43,7 @@ Cột "Trang in" là phạm vi trang của cả chương, kể cả danh sách t
 | I | 2 | Data Models and Query Languages | 27–68 | 49–90 | Relational Model Versus Document Model · Query Languages for Data · Graph-Like Data Models | [chapter-02.md](chapter-02.md) |
 | I | 3 | Storage and Retrieval | 69–110 | 91–132 | Data Structures That Power Your Database · Transaction Processing or Analytics? · Column-Oriented Storage | [chapter-03.md](chapter-03.md) |
 | I | 4 | Encoding and Evolution | 111–144 | 133–166 | Formats for Encoding Data · Modes of Dataflow | [chapter-04.md](chapter-04.md) |
-| II | 5 | Replication | 151–198 | 173–220 | Leaders and Followers · Problems with Replication Lag · Multi-Leader Replication · Leaderless Replication | Chưa có |
+| II | 5 | Replication | 151–198 | 173–220 | Leaders and Followers · Problems with Replication Lag · Multi-Leader Replication · Leaderless Replication | [chapter-05.md](chapter-05.md) (kèm phần giới thiệu Part II) |
 | II | 6 | Partitioning | 199–220 | 221–242 | Partitioning and Replication · Partitioning of Key-Value Data · Partitioning and Secondary Indexes · Rebalancing Partitions · Request Routing | Chưa có |
 | II | 7 | Transactions | 221–272 | 243–294 | The Slippery Concept of a Transaction · Weak Isolation Levels · Serializability | Chưa có |
 | II | 8 | The Trouble with Distributed Systems | 273–320 | 295–342 | Faults and Partial Failures · Unreliable Networks · Unreliable Clocks · Knowledge, Truth, and Lies | Chưa có |
@@ -52,7 +52,7 @@ Cột "Trang in" là phạm vi trang của cả chương, kể cả danh sách t
 | III | 11 | Stream Processing | 439–488 | 461–510 | Transmitting Event Streams · Databases and Streams · Processing Streams | Chưa có |
 | III | 12 | The Future of Data Systems | 489–552 | 511–574 | Data Integration · Unbundling Databases · Aiming for Correctness · Doing the Right Thing | Chưa có |
 
-Phần cuối sách: Glossary (tr. 553–558), Index (tr. 559–590), About the Author và Colophon (tr. 591). Phần giới thiệu Part II bắt đầu ở tr. 145, Part III ở tr. 385.
+Phần cuối sách: Glossary (tr. 553–558), Index (tr. 559–590), About the Author và Colophon (tr. 591). Phần giới thiệu Part II nằm ở tr. 145–148 (ghi chú ở [chapter-05.md, mục 0](chapter-05.md#part-ii)), Part III bắt đầu ở tr. 385.
 
 ## 3. Các tệp trong thư mục
 
@@ -63,8 +63,9 @@ Phần cuối sách: Glossary (tr. 553–558), Index (tr. 559–590), About the 
 | [`chapter-02.md`](chapter-02.md) | Chương 2: mô hình relational, document, graph và các ngôn ngữ truy vấn. | Hoàn thành |
 | [`chapter-03.md`](chapter-03.md) | Chương 3: hash index, LSM-tree, B-tree, OLTP và OLAP, lưu trữ theo cột. | Hoàn thành |
 | [`chapter-04.md`](chapter-04.md) | Chương 4: định dạng mã hóa (JSON, Thrift, Protocol Buffers, Avro), schema evolution, luồng dữ liệu qua database, REST/RPC và message. | Hoàn thành |
-| [`glossary.md`](glossary.md) | Thuật ngữ tiếng Anh kèm giải thích tiếng Việt, bổ sung dần theo từng chương. | Đã có thuật ngữ chương 1–4 |
-| [`system-design-concepts.md`](system-design-concepts.md) | Các nguyên lý System Design và liên kết đến chương liên quan. | Đã có nguyên lý chương 1–4 |
+| [`chapter-05.md`](chapter-05.md) | Phần giới thiệu Part II (shared-nothing, replication và partitioning) và Chương 5: single-leader, replication lag, multi-leader, leaderless, quorum, phát hiện ghi đồng thời. | Hoàn thành |
+| [`glossary.md`](glossary.md) | Thuật ngữ tiếng Anh kèm giải thích tiếng Việt, bổ sung dần theo từng chương. | Đã có thuật ngữ chương 1–5 |
+| [`system-design-concepts.md`](system-design-concepts.md) | Các nguyên lý System Design và liên kết đến chương liên quan. | Đã có nguyên lý chương 1–5 |
 
 Mỗi chương chỉ được viết sau khi đã đọc phần sách tương ứng. Chương sau chỉ bắt đầu khi chương trước đã hoàn thành và được kiểm tra.
 

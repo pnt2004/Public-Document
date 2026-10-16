@@ -6,7 +6,7 @@ Dự án học cuốn *Designing Data-Intensive Applications* của Martin Klepp
 
 Thư mục [`init/`](init/) chứa [PDF sách gốc](init/Designing%20Data%20Intensive%20Applications%20by%20Martin%20Kleppmann.pdf) và [DETAIL.md](init/DETAIL.md), bản yêu cầu chi tiết về nội dung cần tạo. Skill [`read-doc-pdf`](../.agents/skills/read-doc-pdf/SKILL.md) phải đọc README này, sau đó đọc `init/DETAIL.md` và PDF trước khi tạo ghi chú.
 
-PDF đã được xác minh là **ấn bản thứ nhất (First Edition, 3/2017, ISBN 978-1-449-37332-0)**, 12 chương chia thành 3 phần. Trang PDF = trang in + 22. Ghi chú **chương 1–4** (toàn bộ Part I) đã hoàn thành. Chi tiết ấn bản và mục lục nằm trong [`ddia-notes/README.md`](ddia-notes/README.md).
+PDF đã được xác minh là **ấn bản thứ nhất (First Edition, 3/2017, ISBN 978-1-449-37332-0)**, 12 chương chia thành 3 phần. Trang PDF = trang in + 22. Ghi chú **chương 1–5** (toàn bộ Part I, phần giới thiệu Part II và chương 5) đã hoàn thành. Chi tiết ấn bản và mục lục nằm trong [`ddia-notes/README.md`](ddia-notes/README.md).
 
 ## Tài liệu dự kiến
 

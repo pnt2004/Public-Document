@@ -2,12 +2,13 @@
 
 Thuật ngữ tiếng Anh kèm giải thích tiếng Việt, bổ sung dần theo từng chương đã học. Số trang là trang in của ấn bản thứ nhất (2017). Thuật ngữ đánh dấu **(G)** cũng có trong Glossary cuối sách (tr. 553–558). Phần giải thích ở đây là diễn giải, đôi khi kèm ngữ cảnh từ chương đang học.
 
-Đã cập nhật đến: **Chương 4**.
+Đã cập nhật đến: **Chương 5** (kèm phần giới thiệu Part II).
 
 - [Chương 1 — Reliable, Scalable, and Maintainable Applications](#chuong-1)
 - [Chương 2 — Data Models and Query Languages](#chuong-2)
 - [Chương 3 — Storage and Retrieval](#chuong-3)
 - [Chương 4 — Encoding and Evolution](#chuong-4)
+- [Chương 5 — Replication](#chuong-5)
 
 <a id="chuong-1"></a>
 
@@ -75,7 +76,7 @@ Thuật ngữ tiếng Anh kèm giải thích tiếng Việt, bổ sung dần the
 | **Histogram** | Biểu đồ tần suất | Đếm số giá trị trong từng khoảng. Cách đúng để gộp response time từ nhiều máy là cộng các histogram. | tr. 16 |
 | **Scaling up / vertical scaling** | Mở rộng theo chiều dọc | Chuyển sang một máy mạnh hơn. | tr. 17 |
 | **Scaling out / horizontal scaling** | Mở rộng theo chiều ngang | Phân phối tải ra nhiều máy nhỏ hơn. | tr. 17 |
-| **Shared-nothing architecture** **(G)** | Kiến trúc không chia sẻ | Các node độc lập, mỗi node có CPU, bộ nhớ, ổ đĩa riêng, nối với nhau qua mạng thông thường. | tr. 17, 557 |
+| **Shared-nothing architecture** **(G)** | Kiến trúc không chia sẻ | Các node độc lập, mỗi node có CPU, bộ nhớ, ổ đĩa riêng, nối với nhau qua mạng thông thường. Part II tập trung vào kiến trúc này (xem [chương 5](#chuong-5)). | tr. 17, 146–147, 557 |
 | **Elastic system** | Hệ thống co giãn | Tự động thêm tài nguyên khi phát hiện tải tăng. Đối lập với scale thủ công. | tr. 17 |
 | **Stateless / stateful** | Không trạng thái / có trạng thái | Dịch vụ stateless dễ phân tán. Data system stateful khi phân tán thì thêm nhiều độ phức tạp. | tr. 18 |
 | **Magic scaling sauce** | "Nước sốt scale thần kỳ" | Cách gọi đùa cho một kiến trúc scale chung cho mọi trường hợp, thứ không tồn tại. | tr. 18 |
@@ -399,3 +400,122 @@ Thuật ngữ tiếng Anh kèm giải thích tiếng Việt, bổ sung dần the
 | **Zigzag encoding** | Đặt bit dấu ở cuối (mã hóa n thành 2n với số không âm) để số âm nhỏ cũng tốn ít byte. Thrift CompactProtocol và Avro dùng cách này: 1337 thành `f2 14`. | Varint |
 | **Schema registry** | Dịch vụ lưu phiên bản schema; producer gắn ID schema vào message, consumer dùng ID lấy writer's schema; có thể từ chối schema phá tương thích. | Avro, message broker |
 | **Idempotency key** | Khóa do client gửi kèm request để server nhận ra request trùng khi client thử lại. | RPC, idempotence |
+
+<a id="chuong-5"></a>
+
+## Chương 5 — Replication
+
+Gồm cả thuật ngữ trong phần giới thiệu Part II (tr. 145–148).
+
+### Phân tán dữ liệu (phần giới thiệu Part II)
+
+| Thuật ngữ | Tiếng Việt | Giải thích | Trang |
+| --- | --- | --- | --- |
+| **Shared-memory architecture** | Kiến trúc chia sẻ bộ nhớ | Nhiều CPU, RAM, đĩa ghép dưới một hệ điều hành, coi như một máy (scale up). Chi phí tăng nhanh hơn tuyến tính, chỉ ở một vị trí địa lý. | tr. 146 |
+| **NUMA** (*nonuniform memory access*) | Truy cập bộ nhớ không đồng nhất | Trong máy lớn, có bank bộ nhớ gần CPU này hơn CPU khác; muốn hiệu quả vẫn phải chia việc theo vùng bộ nhớ, tức vẫn cần partitioning. | tr. 146 |
+| **Shared-disk architecture** | Kiến trúc chia sẻ đĩa | Nhiều máy có CPU, RAM riêng nhưng dùng chung dãy đĩa (NAS, SAN). Tranh chấp và locking giới hạn khả năng mở rộng. | tr. 146 |
+| **Hot-swappable** | Thay nóng | Linh kiện thay được (đĩa, RAM, CPU) mà không tắt máy. | tr. 146 |
+| **Node** **(G)** | Nút | Một máy hay máy ảo chạy phần mềm database, giao tiếp với node khác qua mạng. | tr. 146, 556 |
+| **Redundancy** | Dư thừa | Có nhiều bản sao để khi một máy hỏng thì máy khác thay. | tr. 145, 147 |
+| **Replication** **(G)** | Nhân bản | Giữ bản sao của cùng dữ liệu trên nhiều node, để dữ liệu vẫn truy cập được khi có node không với tới. | tr. 147, 151, 556–557 |
+| **Partitioning / sharding** **(G)** | Phân vùng | Chia dataset lớn thành các partition nhỏ hơn và đặt lên các node khác nhau (Chương 6). | tr. 147, 556 |
+
+### Leader, follower và replication log
+
+| Thuật ngữ | Tiếng Việt | Giải thích | Trang |
+| --- | --- | --- | --- |
+| **Replica** | Bản sao | Node lưu một bản sao database. | tr. 152 |
+| **Leader-based replication** (*active/passive*, *master–slave*) | Nhân bản dựa trên leader | Một replica nhận ghi, các replica khác áp dụng thay đổi theo đúng thứ tự từ replication log. | tr. 152 |
+| **Leader / master / primary** **(G)** | Nút chủ | Replica được chỉ định nhận ghi. Có thể được bầu qua một giao thức hoặc do quản trị viên chọn. | tr. 152, 555 |
+| **Follower / read replica / slave / secondary / hot standby** **(G)** | Nút theo | Replica không nhận ghi trực tiếp từ client, chỉ áp dụng thay đổi nhận từ leader. | tr. 152, 555 |
+| **Replication log / change stream** | Log nhân bản | Chuỗi thay đổi leader gửi cho follower. Glossary gọi đây là một vai trò của log. | tr. 152, 556 |
+| **Synchronous / asynchronous replication** **(G)** | Nhân bản đồng bộ / bất đồng bộ | Đồng bộ: leader chờ follower xác nhận rồi mới báo thành công. Bất đồng bộ: leader không chờ. | tr. 153–155, 553, 557 |
+| **Semi-synchronous** | Bán đồng bộ | Một follower đồng bộ, các follower khác bất đồng bộ; dữ liệu luôn có trên ít nhất hai node. | tr. 154–155 |
+| **Durable** **(G)** | Bền vững | Lưu dữ liệu sao cho tin rằng nó không mất dù có fault. Replication bất đồng bộ làm yếu durability. | tr. 155, 554 |
+| **Chain replication** | Nhân bản chuỗi | Biến thể của replication đồng bộ, dùng trong Microsoft Azure Storage. | tr. 155 |
+| **Consensus** **(G)** | Đồng thuận | Bài toán khiến nhiều node đồng ý về một giá trị, ví dụ node nào làm leader (Chương 9). | tr. 155, 157, 554 |
+| **Consistent snapshot** | Ảnh chụp nhất quán | Trạng thái database tại một thời điểm, chụp mà không cần khóa toàn bộ; dùng để dựng follower mới và backup. | tr. 156 |
+| **Log sequence number / binlog coordinates** | Vị trí trong log | Tên gọi vị trí chính xác trong replication log của PostgreSQL và MySQL. | tr. 156 |
+| **Caught up / catch-up recovery** | Bắt kịp / phục hồi bắt kịp | Follower đã xử lý hết thay đổi tồn đọng; follower khởi động lại thì xin các thay đổi từ vị trí cuối đã xử lý. | tr. 156 |
+| **Failover** **(G)** | Chuyển đổi dự phòng | Chuyển vai trò leader sang node khác khi leader hỏng: phát hiện, chọn leader mới, cấu hình lại. | tr. 157, 554 |
+| **Timeout** **(G)** | Hết thời gian chờ | Cách thường dùng để đoán node đã chết; quá ngắn thì failover không cần thiết. | tr. 157–158, 557 |
+| **Controller node** | Nút điều khiển | Node đã được bầu từ trước, có quyền chỉ định leader mới. | tr. 157 |
+| **Split brain** **(G)** | Hai leader cùng lúc | Hai node cùng tin mình là leader và cùng nhận ghi; dễ mất hoặc hỏng dữ liệu. | tr. 158, 557 |
+| **Fencing / STONITH** | Rào chắn / "bắn node kia" | Cơ chế tắt một node khi phát hiện hai leader (*Shoot The Other Node In The Head*). Bàn kỹ ở Chương 8. | tr. 158 |
+| **Statement-based replication** | Nhân bản theo câu lệnh | Gửi câu lệnh SQL cho follower thực thi lại. Hỏng với hàm không tất định, thứ tự, side effect. | tr. 158–159 |
+| **Nondeterministic function** | Hàm không tất định | Hàm cho kết quả khác nhau mỗi lần chạy, như `NOW()`, `RAND()`. | tr. 159 |
+| **WAL shipping** | Gửi write-ahead log | Gửi chính WAL của storage engine cho follower. Gắn chặt với định dạng lưu trữ. | tr. 159–160 |
+| **Zero-downtime upgrade** | Nâng cấp không dừng hệ thống | Nâng cấp follower trước rồi failover; chỉ làm được nếu giao thức replication cho phép lệch phiên bản. | tr. 160 |
+| **Logical log / row-based replication** | Log logic / nhân bản theo hàng | Log thay đổi ở mức hàng, tách khỏi storage engine; cho phép khác phiên bản và dễ parse. | tr. 160 |
+| **Change data capture** | Thu thập thay đổi dữ liệu | Dùng logical log để đưa thay đổi của database sang hệ thống khác (Chương 11). | tr. 161 |
+| **Trigger-based replication** | Nhân bản bằng trigger | Trigger ghi thay đổi vào bảng riêng, tiến trình ngoài đọc và nhân bản. Linh hoạt nhưng tốn kém, dễ lỗi. | tr. 161 |
+
+### Replication lag và các đảm bảo khi đọc
+
+| Thuật ngữ | Tiếng Việt | Giải thích | Trang |
+| --- | --- | --- | --- |
+| **Read-scaling architecture** | Kiến trúc mở rộng đọc | Thêm follower để tăng năng lực đọc; chỉ thực tế với replication bất đồng bộ. | tr. 161 |
+| **Eventual consistency** | Nhất quán cuối cùng | Ngừng ghi và chờ thì các replica sẽ giống nhau; "cuối cùng" không có giới hạn thời gian. | tr. 162 |
+| **Replication lag** | Độ trễ nhân bản | Khoảng trễ từ khi leader ghi tới khi follower phản ánh; thường dưới một giây, có thể lên vài phút. | tr. 162 |
+| **Stale** | Lỗi thời | Giá trị cũ, chưa phản ánh lần ghi mới nhất. | tr. 162, 178 |
+| **Read-after-write / read-your-writes consistency** | Đọc thấy ghi của chính mình | Người dùng tải lại trang luôn thấy cập nhật chính họ đã gửi; không hứa gì về người khác. | tr. 163 |
+| **Logical timestamp** | Mốc thời gian logic | Giá trị chỉ thứ tự ghi (như log sequence number), không phụ thuộc đồng hồ. | tr. 164 |
+| **Cross-device read-after-write consistency** | Đọc sau ghi trên nhiều thiết bị | Ghi trên thiết bị này thì xem trên thiết bị khác cũng thấy; cần metadata tập trung. | tr. 164 |
+| **Monotonic reads** | Đọc đơn điệu | Đọc liên tiếp không thấy dữ liệu cũ hơn lần trước; mạnh hơn eventual, yếu hơn strong consistency. | tr. 165 |
+| **Consistent prefix reads** | Đọc tiền tố nhất quán | Các lần ghi xảy ra theo thứ tự nào thì người đọc thấy theo thứ tự đó. | tr. 166 |
+| **Causality** **(G)** | Quan hệ nhân quả | Phụ thuộc giữa các sự kiện khi sự kiện này "happens before" sự kiện kia, ví dụ câu trả lời sau câu hỏi. | tr. 165, 176, 554 |
+
+### Multi-leader replication
+
+| Thuật ngữ | Tiếng Việt | Giải thích | Trang |
+| --- | --- | --- | --- |
+| **Multi-leader replication** (*master–master*, *active/active*) | Nhân bản nhiều leader | Nhiều node nhận ghi; mỗi leader đồng thời là follower của leader khác. | tr. 168 |
+| **Multi-datacenter operation** | Vận hành nhiều datacenter | Mỗi datacenter một leader; ghi cục bộ, nhân bản bất đồng bộ giữa các datacenter. | tr. 168–169 |
+| **Offline operation / sync** | Làm việc offline / đồng bộ | Mỗi thiết bị có database cục bộ làm leader; lag có thể hàng ngày. | tr. 170 |
+| **Collaborative editing** | Cộng tác chỉnh sửa | Nhiều người sửa đồng thời một tài liệu; không khóa thì là multi-leader. | tr. 170–171 |
+| **Write conflict** | Xung đột ghi | Hai lần ghi đồng thời trên hai leader sửa cùng dữ liệu theo cách khác nhau. | tr. 171 |
+| **Conflict resolution** | Giải quyết xung đột | Quyết định giá trị cuối cùng khi có xung đột. | tr. 171–173 |
+| **Conflict avoidance** | Tránh xung đột | Mọi lần ghi cho một bản ghi đi qua cùng một leader. Hỏng khi phải đổi leader nhà. | tr. 172 |
+| **Convergent conflict resolution** | Giải quyết hội tụ | Mọi replica đi tới cùng giá trị cuối khi mọi thay đổi đã được nhân bản. | tr. 172–173 |
+| **Last write wins (LWW)** | Ghi sau cùng thắng | Giữ lần ghi có timestamp lớn nhất, bỏ các lần ghi khác. Hội tụ nhưng âm thầm mất dữ liệu. | tr. 173, 186 |
+| **Conflict handler (on write / on read)** | Bộ xử lý xung đột (khi ghi / khi đọc) | Code ứng dụng giải quyết xung đột: chạy nền khi phát hiện (on write), hoặc nhận mọi phiên bản ở lần đọc sau (on read). | tr. 173 |
+| **CRDT** (*conflict-free replicated datatype*) | Kiểu dữ liệu nhân bản không xung đột | Cấu trúc dữ liệu (set, map, list, counter…) tự gộp các sửa đổi đồng thời theo cách hợp lý; dùng two-way merge. | tr. 174, 191 |
+| **Mergeable persistent data structures** | Cấu trúc dữ liệu bền vững gộp được | Theo dõi lịch sử như Git, dùng three-way merge. | tr. 174 |
+| **Operational transformation (OT)** | Biến đổi thao tác | Thuật toán của Etherpad, Google Docs cho sửa đồng thời danh sách có thứ tự. | tr. 174 |
+| **Replication topology** | Topology nhân bản | Các đường truyền mà ghi lan giữa các node: circular, star (tree), all-to-all. | tr. 175 |
+| **Single point of failure** | Điểm hỏng đơn | Một node hỏng làm gián đoạn cả luồng nhân bản; gặp ở circular và star. | tr. 176 |
+
+### Leaderless replication và ghi đồng thời
+
+| Thuật ngữ | Tiếng Việt | Giải thích | Trang |
+| --- | --- | --- | --- |
+| **Leaderless replication / Dynamo-style** | Nhân bản không leader | Mọi replica nhận ghi trực tiếp; client hoặc coordinator gửi ghi và đọc tới nhiều replica. Riak, Cassandra, Voldemort. | tr. 177 |
+| **Coordinator node** | Nút điều phối | Node gửi ghi tới các replica thay client, nhưng không áp đặt thứ tự ghi. | tr. 177 |
+| **Read repair** | Sửa khi đọc | Client thấy replica stale khi đọc song song và ghi giá trị mới vào nó. | tr. 179 |
+| **Anti-entropy process** | Tiến trình chống sai lệch | Tiến trình nền so dữ liệu giữa các replica và chép phần thiếu, không theo thứ tự. | tr. 179 |
+| **Quorum** **(G)** | Túc số | Số node tối thiểu phải "bỏ phiếu" để một thao tác được coi là thành công. | tr. 179, 556 |
+| **n, w, r** | — | Số replica, số xác nhận cần cho ghi, số node cần hỏi khi đọc. w + r > n thì tập ghi và tập đọc giao nhau. | tr. 179–181 |
+| **Quorum reads and writes / strict quorum** | Đọc ghi theo túc số / túc số chặt | Đọc và ghi tuân theo r, w với w + r > n trên đúng n node "nhà". | tr. 179 |
+| **Sloppy quorum** | Túc số lỏng | Cho tính cả node ngoài n node nhà để đủ w; tăng write availability nhưng không bảo đảm đọc thấy ghi mới nhất. | tr. 183–184 |
+| **Hinted handoff** | Chuyển giao kèm gợi ý | Node tạm nhận ghi thay node khác chuyển dữ liệu về node nhà khi mạng phục hồi. | tr. 184 |
+| **Staleness monitoring** | Giám sát độ lỗi thời | Đo xem replica cũ tới đâu; dễ với leader-based (vị trí log), khó với leaderless. | tr. 182–183 |
+| **Clock skew** **(G, skew nghĩa 2)** | Lệch đồng hồ | Đồng hồ các máy lệch nhau, khiến LWW có thể làm mất ghi. | tr. 181, 557 |
+| **Concurrent** | Đồng thời | Hai thao tác không thao tác nào biết về thao tác kia, bất kể thời gian vật lý. | tr. 186–187 |
+| **Happens-before** | Xảy ra trước | A happens before B nếu B biết về, phụ thuộc vào hay xây trên A. | tr. 186–187 |
+| **Causally dependent** | Phụ thuộc nhân quả | B xây trên A, nên phải xảy ra sau A. | tr. 186 |
+| **Version number** | Số phiên bản | Server tăng mỗi lần ghi key; client ghi kèm version đã đọc để server biết giá trị nào được ghi đè. | tr. 189–190 |
+| **Siblings** | Giá trị anh em | Các giá trị được ghi đồng thời mà server giữ lại để client gộp (tên gọi của Riak). | tr. 190 |
+| **Tombstone** | Dấu xóa | Dấu kèm version báo món đã bị xóa, để khi gộp siblings món đó không xuất hiện lại. | tr. 191 |
+| **Version vector** | Vector phiên bản | Tập version number của mọi replica cho một key; phân biệt ghi đè với ghi đồng thời. | tr. 191 |
+| **Dotted version vector** | — | Biến thể version vector dùng trong Riak 2.0. | tr. 191 |
+| **Causal context** | Ngữ cảnh nhân quả | Tên Riak đặt cho version vector được mã hóa thành chuỗi. | tr. 191 |
+| **Vector clock** | Đồng hồ vector | Hay bị gọi lẫn với version vector nhưng không hoàn toàn giống; so sánh trạng thái replica thì dùng version vector. | tr. 191 |
+
+### Bổ sung ngoài sách (liên quan chương 5)
+
+| Thuật ngữ | Giải thích | Liên quan đến |
+| --- | --- | --- |
+| **Merkle tree** | Cây hash; hai replica so hash từng nhánh để tìm nhanh phần dữ liệu lệch. Dynamo dùng cho anti-entropy. | Anti-entropy |
+| **G-Counter** | CRDT bộ đếm chỉ tăng: mỗi replica một ô đếm, gộp bằng max từng ô, giá trị là tổng. | CRDT |
+| **Nguyên lý chuồng bồ câu (pigeonhole principle)** | Lý do w + r > n buộc tập ghi và tập đọc giao nhau: \|W ∩ R\| ≥ w + r − n ≥ 1. | Quorum |
+| **Majority quorum** | Với n lẻ, w = r = (n + 1)/2 chịu được (n − 1)/2 node hỏng. | Quorum |

@@ -71,7 +71,7 @@ flowchart TD
 | Query optimizer xây một lần, mọi ứng dụng hưởng lợi | **Chương 1**: abstraction tốt được tái sử dụng, cải tiến có lợi cho mọi ứng dụng | tr. 38 |
 | Cách các mô hình được cài đặt trên đĩa, locality, search index | **Chương 3** — Storage and Retrieval | tr. 28, 41, 64 |
 | Vấn đề của JSON khi làm định dạng mã hóa, schema evolution | **Chương 4** — Encoding and Evolution | tr. 32, 41 |
-| Khác biệt về fault tolerance giữa relational và document | **Chương 5** — Replication | tr. 38 |
+| Khác biệt về fault tolerance giữa relational và document | **Chương 5** — Replication ([chapter-05.md](chapter-05.md)) | tr. 38 |
 | Khác biệt về xử lý đồng thời | **Chương 7** — Transactions | tr. 38 |
 | MapReduce, Pregel | **Chương 10** — Batch Processing | tr. 46, 50 |
 | Normalization, denormalization, caching, derived data | **Part III** | tr. 34 |
