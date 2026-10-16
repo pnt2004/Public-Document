@@ -35,7 +35,7 @@ Theo Preface (tr. xvi–xvii) và phần giới thiệu Part I (tr. 1), sách g�
 
 ### Mục lục chi tiết
 
-Cột "Trang in" là phạm vi trang của cả chương, kể cả danh sách tài liệu tham khảo cuối chương.
+Cột "Trang in" tính từ trang đầu chương tới trước trang đầu chương sau (theo bookmark PDF), kể cả danh sách tài liệu tham khảo. Vì bản đồ minh họa của mỗi chương được in ngay trước trang mở đầu chương, trang cuối của một khoảng thường là bản đồ (hoặc trang trắng) của chương kế tiếp. Phạm vi nội dung chính xác của từng chương được ghi ở đầu mỗi tệp ghi chú.
 
 | Phần | Chương | Tên chương | Trang in | Trang PDF | Các mục chính | Ghi chú |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -44,15 +44,15 @@ Cột "Trang in" là phạm vi trang của cả chương, kể cả danh sách t
 | I | 3 | Storage and Retrieval | 69–110 | 91–132 | Data Structures That Power Your Database · Transaction Processing or Analytics? · Column-Oriented Storage | [chapter-03.md](chapter-03.md) |
 | I | 4 | Encoding and Evolution | 111–144 | 133–166 | Formats for Encoding Data · Modes of Dataflow | [chapter-04.md](chapter-04.md) |
 | II | 5 | Replication | 151–198 | 173–220 | Leaders and Followers · Problems with Replication Lag · Multi-Leader Replication · Leaderless Replication | [chapter-05.md](chapter-05.md) (kèm phần giới thiệu Part II) |
-| II | 6 | Partitioning | 199–220 | 221–242 | Partitioning and Replication · Partitioning of Key-Value Data · Partitioning and Secondary Indexes · Rebalancing Partitions · Request Routing | Chưa có |
-| II | 7 | Transactions | 221–272 | 243–294 | The Slippery Concept of a Transaction · Weak Isolation Levels · Serializability | Chưa có |
-| II | 8 | The Trouble with Distributed Systems | 273–320 | 295–342 | Faults and Partial Failures · Unreliable Networks · Unreliable Clocks · Knowledge, Truth, and Lies | Chưa có |
-| II | 9 | Consistency and Consensus | 321–384 | 343–406 | Consistency Guarantees · Linearizability · Ordering Guarantees · Distributed Transactions and Consensus | Chưa có |
-| III | 10 | Batch Processing | 389–438 | 411–460 | Batch Processing with Unix Tools · MapReduce and Distributed Filesystems · Beyond MapReduce | Chưa có |
-| III | 11 | Stream Processing | 439–488 | 461–510 | Transmitting Event Streams · Databases and Streams · Processing Streams | Chưa có |
-| III | 12 | The Future of Data Systems | 489–552 | 511–574 | Data Integration · Unbundling Databases · Aiming for Correctness · Doing the Right Thing | Chưa có |
+| II | 6 | Partitioning | 199–220 | 221–242 | Partitioning and Replication · Partitioning of Key-Value Data · Partitioning and Secondary Indexes · Rebalancing Partitions · Request Routing | [chapter-06.md](chapter-06.md) |
+| II | 7 | Transactions | 221–272 | 243–294 | The Slippery Concept of a Transaction · Weak Isolation Levels · Serializability | [chapter-07.md](chapter-07.md) |
+| II | 8 | The Trouble with Distributed Systems | 273–320 | 295–342 | Faults and Partial Failures · Unreliable Networks · Unreliable Clocks · Knowledge, Truth, and Lies | [chapter-08.md](chapter-08.md) |
+| II | 9 | Consistency and Consensus | 321–384 | 343–406 | Consistency Guarantees · Linearizability · Ordering Guarantees · Distributed Transactions and Consensus | [chapter-09.md](chapter-09.md) |
+| III | 10 | Batch Processing | 389–438 | 411–460 | Batch Processing with Unix Tools · MapReduce and Distributed Filesystems · Beyond MapReduce | [chapter-10.md](chapter-10.md) (kèm phần giới thiệu Part III) |
+| III | 11 | Stream Processing | 439–488 | 461–510 | Transmitting Event Streams · Databases and Streams · Processing Streams | [chapter-11.md](chapter-11.md) |
+| III | 12 | The Future of Data Systems | 489–552 | 511–574 | Data Integration · Unbundling Databases · Aiming for Correctness · Doing the Right Thing | [chapter-12.md](chapter-12.md) |
 
-Phần cuối sách: Glossary (tr. 553–558), Index (tr. 559–590), About the Author và Colophon (tr. 591). Phần giới thiệu Part II nằm ở tr. 145–148 (ghi chú ở [chapter-05.md, mục 0](chapter-05.md#part-ii)), Part III bắt đầu ở tr. 385.
+Phần cuối sách: Glossary (tr. 553–558), Index (tr. 559–590), About the Author và Colophon (tr. 591). Phần giới thiệu Part II nằm ở tr. 145–148 (ghi chú ở [chapter-05.md, mục 0](chapter-05.md#part-ii)), phần giới thiệu Part III nằm ở tr. 385–387 (ghi chú ở [chapter-10.md, mục 0](chapter-10.md#part-iii)).
 
 ## 3. Các tệp trong thư mục
 
@@ -64,8 +64,15 @@ Phần cuối sách: Glossary (tr. 553–558), Index (tr. 559–590), About the 
 | [`chapter-03.md`](chapter-03.md) | Chương 3: hash index, LSM-tree, B-tree, OLTP và OLAP, lưu trữ theo cột. | Hoàn thành |
 | [`chapter-04.md`](chapter-04.md) | Chương 4: định dạng mã hóa (JSON, Thrift, Protocol Buffers, Avro), schema evolution, luồng dữ liệu qua database, REST/RPC và message. | Hoàn thành |
 | [`chapter-05.md`](chapter-05.md) | Phần giới thiệu Part II (shared-nothing, replication và partitioning) và Chương 5: single-leader, replication lag, multi-leader, leaderless, quorum, phát hiện ghi đồng thời. | Hoàn thành |
-| [`glossary.md`](glossary.md) | Thuật ngữ tiếng Anh kèm giải thích tiếng Việt, bổ sung dần theo từng chương. | Đã có thuật ngữ chương 1–5 |
-| [`system-design-concepts.md`](system-design-concepts.md) | Các nguyên lý System Design và liên kết đến chương liên quan. | Đã có nguyên lý chương 1–5 |
+| [`chapter-06.md`](chapter-06.md) | Chương 6: phân vùng theo khoảng key và theo hash, skew và hot spot, secondary index cục bộ và toàn cục, rebalancing, định tuyến request. | Hoàn thành |
+| [`chapter-07.md`](chapter-07.md) | Chương 7: ACID, các mức isolation yếu (read committed, snapshot isolation), lost update, write skew, phantom, serializability (thực thi tuần tự, 2PL, SSI). | Hoàn thành |
+| [`chapter-08.md`](chapter-08.md) | Chương 8: partial failure, mạng không tin cậy, timeout, đồng hồ không tin cậy, process pause, đa số và fencing token, Byzantine fault, system model. | Hoàn thành |
+| [`chapter-09.md`](chapter-09.md) | Chương 9: linearizability, CAP, causality và thứ tự, Lamport timestamp, total order broadcast, 2PC, XA, consensus, ZooKeeper. | Hoàn thành |
+| [`chapter-10.md`](chapter-10.md) | Phần giới thiệu Part III (system of record, derived data) và Chương 10: công cụ Unix, MapReduce và HDFS, các thuật toán join, dataflow engine, xử lý đồ thị. | Hoàn thành |
+| [`chapter-11.md`](chapter-11.md) | Chương 11: message broker và log, change data capture, event sourcing, thời gian và window, stream join, exactly-once. | Hoàn thành |
+| [`chapter-12.md`](chapter-12.md) | Chương 12: tích hợp dữ liệu qua derived data, unbundling database, correctness end-to-end, timeliness và integrity, đạo đức và quyền riêng tư. | Hoàn thành |
+| [`glossary.md`](glossary.md) | Thuật ngữ tiếng Anh kèm giải thích tiếng Việt, bổ sung dần theo từng chương. | Hoàn thành (chương 1–12) |
+| [`system-design-concepts.md`](system-design-concepts.md) | Các nguyên lý System Design và liên kết đến chương liên quan. | Hoàn thành (P0–P130, chương 1–12) |
 
 Mỗi chương chỉ được viết sau khi đã đọc phần sách tương ứng. Chương sau chỉ bắt đầu khi chương trước đã hoàn thành và được kiểm tra.
 

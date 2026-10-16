@@ -6,7 +6,7 @@ Kho tài liệu học bằng tiếng Việt từ sách và tài liệu kỹ thu�
 
 | Thư mục | Mục đích | Trạng thái |
 | --- | --- | --- |
-| [DDIA](DDIA/README.md) | Học *Designing Data-Intensive Applications* của Martin Kleppmann và tư duy về hệ thống dữ liệu. | Đã xác minh ấn bản (First Edition, 2017) và mục lục; đã có ghi chú [chương 1](DDIA/ddia-notes/chapter-01.md), [chương 2](DDIA/ddia-notes/chapter-02.md), [chương 3](DDIA/ddia-notes/chapter-03.md), [chương 4](DDIA/ddia-notes/chapter-04.md) (hết Part I) và [chương 5](DDIA/ddia-notes/chapter-05.md) (mở đầu Part II). |
+| [DDIA](DDIA/README.md) | Học *Designing Data-Intensive Applications* của Martin Kleppmann và tư duy về hệ thống dữ liệu. | Đã xác minh ấn bản (First Edition, 2017) và mục lục; đã có ghi chú [chương 1](DDIA/ddia-notes/chapter-01.md), [chương 2](DDIA/ddia-notes/chapter-02.md), [chương 3](DDIA/ddia-notes/chapter-03.md), [chương 4](DDIA/ddia-notes/chapter-04.md), [chương 5](DDIA/ddia-notes/chapter-05.md), [chương 6](DDIA/ddia-notes/chapter-06.md), [chương 7](DDIA/ddia-notes/chapter-07.md), [chương 8](DDIA/ddia-notes/chapter-08.md), [chương 9](DDIA/ddia-notes/chapter-09.md), [chương 10](DDIA/ddia-notes/chapter-10.md), [chương 11](DDIA/ddia-notes/chapter-11.md) và [chương 12](DDIA/ddia-notes/chapter-12.md): hoàn thành cả cuốn sách. |
 
 Mỗi dự án mới cần một thư mục riêng gồm `README.md` mô tả dự án và `init/` chứa **tệp nguồn gốc** cùng `DETAIL.md` ghi rõ cần tạo những gì, phạm vi, mức độ chi tiết và định dạng đầu ra. Skill là quy trình dùng chung; `DETAIL.md` là yêu cầu cụ thể của từng dự án.
 

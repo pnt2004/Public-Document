@@ -2,7 +2,7 @@
 
 *Replication*
 
-> **Nguồn:** *Designing Data-Intensive Applications*, Martin Kleppmann, O'Reilly, **First Edition (3/2017)**, Chương 5, **tr. 151–198** (trang PDF 173–220). Phần giới thiệu **Part II — Distributed Data** ở **tr. 145–148** (PDF 167–170) được ghi chú ở [mục 0](#part-ii) vì nó đặt bối cảnh cho cả chương 5–9. Bản đồ minh họa của chương nằm ở tr. 150 (PDF 172); tr. 149 để trắng.
+> **Nguồn:** *Designing Data-Intensive Applications*, Martin Kleppmann, O'Reilly, **First Edition (3/2017)**, Chương 5, **tr. 151–197** (trang PDF 173–219), kể cả References ở tr. 193–197; tr. 198 (PDF 220) là bản đồ đầu chương 6. Phần giới thiệu **Part II — Distributed Data** ở **tr. 145–148** (PDF 167–170) được ghi chú ở [mục 0](#part-ii) vì nó đặt bối cảnh cho cả chương 5–9. Bản đồ minh họa của chương nằm ở tr. 150 (PDF 172); tr. 149 để trắng.
 > "tr. N" là số trang in trong sách. Trang PDF = N + 22.
 >
 > **Quy ước nhãn:**
@@ -191,7 +191,7 @@ flowchart TD
 | Tombstone | **Chương 3** ([B2](chapter-03.md#compaction)) | tr. 191 |
 | Star topology khác star schema | **Chương 3** ([B7](chapter-03.md#star-schema)) | tr. 175 |
 | Logical log giữ backward compatibility giữa các phiên bản database | **Chương 4** ([tương thích](chapter-04.md#compatibility)) | tr. 160 |
-| Partitioning, request routing | **Chương 6** ("Request Routing", tr. 214) | tr. 151, 157, 166, 180 |
+| Partitioning, request routing | **Chương 6** ([Request Routing](chapter-06.md#request-routing), tr. 214) | tr. 151, 157, 166, 180 |
 | Transaction cho đảm bảo mạnh hơn | **Chương 7, 9** | tr. 167, 173, 182 |
 | Đồng hồ không tin cậy, fencing, mạng không tin cậy | **Chương 8** (tr. 287, 291, 301) | tr. 158, 164, 177, 186 |
 | Consensus, linearizability và quorum | **Chương 9** (tr. 334) | tr. 155, 157, 182 |
@@ -286,7 +286,7 @@ sequenceDiagram
 
 > **Ví dụ minh họa do AI xây dựng (phép tính).** Giả sử mỗi follower sẵn sàng 99,9% thời gian và hỏng độc lập với nhau. Nếu leader phải chờ **cả 10 follower** đồng bộ, xác suất ghi được là 0,999¹⁰ ≈ 99,0%: hệ thống mất khả năng ghi khoảng 1% thời gian, tức khoảng 3,6 ngày mỗi năm. Với 100 follower, con số là 0,999¹⁰⁰ ≈ 90,5%. Semi-synchronous chỉ phụ thuộc **một** follower đồng bộ và có thể đổi sang follower khác khi nó hỏng. Phép tính này minh họa nhận xét của sách: càng nhiều node, cấu hình đồng bộ hoàn toàn càng kém tin cậy (tr. 161–162).
 
-**Hộp "Research on Replication"** (tr. 155). Mất dữ liệu khi leader hỏng là vấn đề nghiêm trọng của hệ bất đồng bộ. Vì vậy giới nghiên cứu vẫn tìm cách nhân bản **không mất dữ liệu** mà vẫn giữ hiệu năng và availability tốt. Ví dụ ***chain replication*** [8, 9], một biến thể của replication đồng bộ, đã được cài thành công trong vài hệ như Microsoft Azure Storage [10, 11]. Consistency của replication có **liên hệ chặt** với ***consensus*** (khiến nhiều node đồng ý về một giá trị); Chương 9 bàn phần lý thuyết này. Chương 5 chỉ tập trung vào các dạng replication đơn giản hơn, được dùng phổ biến nhất trong thực tế.
+**Hộp "Research on Replication"** (tr. 155). Mất dữ liệu khi leader hỏng là vấn đề nghiêm trọng của hệ bất đồng bộ. Vì vậy giới nghiên cứu vẫn tìm cách nhân bản **không mất dữ liệu** mà vẫn giữ hiệu năng và availability tốt. Ví dụ ***chain replication*** [8, 9], một biến thể của replication đồng bộ, đã được cài thành công trong vài hệ như Microsoft Azure Storage [10, 11]. Consistency của replication có **liên hệ chặt** với ***consensus*** (khiến nhiều node đồng ý về một giá trị); [Chương 9](chapter-09.md#consensus) bàn phần lý thuyết này. Chương 5 chỉ tập trung vào các dạng replication đơn giản hơn, được dùng phổ biến nhất trong thực tế.
 
 > **Bổ sung ngoài sách.** Trong chain replication (van Renesse và Schneider, 2004), các replica xếp thành một chuỗi. Ghi đi vào đầu chuỗi, lan dần qua từng node, và node cuối chuỗi xác nhận với client; đọc được phục vụ ở node cuối. Một lần ghi được xác nhận nghĩa là mọi node trong chuỗi đã có nó.
 
@@ -342,8 +342,8 @@ Các bước thực tế **khác nhau nhiều** giữa các database. Có hệ t
 **How — failover tự động thường gồm** (tr. 157):
 
 1. **Xác định leader đã hỏng.** Có rất nhiều thứ có thể hỏng: crash, mất điện, sự cố mạng… **Không có cách chắc chắn** để biết chuyện gì đã xảy ra, nên đa số hệ thống dùng **timeout**: các node liên tục gửi message qua lại, và node nào không trả lời trong một khoảng thời gian (ví dụ **30 giây**) bị coi là đã chết. (Nếu leader bị tắt có chủ đích để bảo trì thì không áp dụng bước này.)
-2. **Chọn leader mới.** Có thể qua **bầu chọn** (leader được **đa số** replica còn lại chọn), hoặc do một ***controller node*** đã được bầu từ trước chỉ định. Ứng viên tốt nhất thường là replica có **thay đổi mới nhất** từ leader cũ, để giảm mất dữ liệu. Khiến mọi node đồng ý về leader mới là một bài toán **consensus** (Chương 9).
-3. **Cấu hình lại hệ thống dùng leader mới.** Client phải gửi ghi tới leader mới ("Request Routing", tr. 214). Nếu leader cũ quay lại, nó có thể vẫn **tin mình là leader**, không biết các replica khác đã buộc nó thôi vai trò. Hệ thống phải bảo đảm leader cũ trở thành follower và công nhận leader mới.
+2. **Chọn leader mới.** Có thể qua **bầu chọn** (leader được **đa số** replica còn lại chọn), hoặc do một ***controller node*** đã được bầu từ trước chỉ định. Ứng viên tốt nhất thường là replica có **thay đổi mới nhất** từ leader cũ, để giảm mất dữ liệu. Khiến mọi node đồng ý về leader mới là một bài toán **consensus** ([Chương 9](chapter-09.md#leader-election)).
+3. **Cấu hình lại hệ thống dùng leader mới.** Client phải gửi ghi tới leader mới ("Request Routing", tr. 214, [chương 6](chapter-06.md#request-routing)). Nếu leader cũ quay lại, nó có thể vẫn **tin mình là leader**, không biết các replica khác đã buộc nó thôi vai trò. Hệ thống phải bảo đảm leader cũ trở thành follower và công nhận leader mới.
 
 ```mermaid
 flowchart TD
@@ -369,7 +369,7 @@ flowchart TD
 3. **Split brain.** Trong vài kịch bản lỗi (Chương 8), **hai node cùng tin mình là leader**. Tình huống này gọi là ***split brain*** và rất nguy hiểm: nếu cả hai cùng nhận ghi mà không có quy trình giải quyết xung đột ([B3](#b3)), dữ liệu dễ bị mất hoặc hỏng. Để an toàn, một số hệ có cơ chế **tắt một node** khi phát hiện hai leader. Nhưng nếu cơ chế đó thiết kế không cẩn thận, có thể **cả hai node đều bị tắt** [14].
 4. **Timeout bao lâu là đúng?** Timeout **dài** thì phục hồi lâu khi leader hỏng thật. Timeout **ngắn** thì có thể **failover không cần thiết**: tải tăng đột biến tạm thời làm thời gian phản hồi vượt timeout, hoặc trục trặc mạng làm gói tin đến trễ. Nếu hệ thống **đang chật vật** vì tải cao hay vấn đề mạng, một lần failover không cần thiết dễ làm tình hình **tệ hơn**.
 
-> Chú thích ii (tr. 158). Cách tắt node như trên gọi là ***fencing***, hay nói mạnh hơn là **STONITH** (*Shoot The Other Node In The Head*). Fencing được bàn kỹ ở "The leader and the lock", tr. 301 (Chương 8).
+> Chú thích ii (tr. 158). Cách tắt node như trên gọi là ***fencing***, hay nói mạnh hơn là **STONITH** (*Shoot The Other Node In The Head*). Fencing được bàn kỹ ở "The leader and the lock", tr. 301 ([chương 8](chapter-08.md#leader-lock)).
 
 ```mermaid
 sequenceDiagram
@@ -453,7 +453,7 @@ flowchart LR
 - Một transaction sửa nhiều hàng sinh ra nhiều bản ghi log như vậy, theo sau là một bản ghi báo **transaction đã commit**. MySQL binlog (khi cấu hình row-based replication) dùng cách này [17].
 - **Lợi ích** (tr. 160–161):
   - Vì tách khỏi nội bộ storage engine, logical log dễ giữ **backward compatible** hơn ([chương 4](chapter-04.md#compatibility)). Leader và follower chạy được **phiên bản database khác nhau**, thậm chí **storage engine khác nhau**.
-  - Logical log **dễ cho ứng dụng bên ngoài parse**. Điều này hữu ích khi muốn gửi nội dung database sang hệ thống khác: data warehouse để phân tích offline, hoặc để dựng index và cache tùy biến [18]. Kỹ thuật này gọi là ***change data capture*** (Chương 11).
+  - Logical log **dễ cho ứng dụng bên ngoài parse**. Điều này hữu ích khi muốn gửi nội dung database sang hệ thống khác: data warehouse để phân tích offline, hoặc để dựng index và cache tùy biến [18]. Kỹ thuật này gọi là ***change data capture*** ([Chương 11](chapter-11.md#cdc)).
 
 <a id="trigger-based"></a>
 
@@ -540,7 +540,7 @@ sequenceDiagram
 
 1. **Đọc thứ người dùng có thể đã sửa từ leader, còn lại đọc từ follower.** Cần có cách biết một thứ **có thể đã bị sửa** mà không phải truy vấn nó. Ví dụ hồ sơ trên mạng xã hội thường chỉ chủ hồ sơ sửa được. Quy tắc đơn giản: **hồ sơ của chính mình đọc từ leader**, hồ sơ người khác đọc từ follower.
 2. **Dùng tiêu chí khác khi hầu hết mọi thứ đều sửa được.** Nếu phần lớn dữ liệu người dùng có thể sửa, cách 1 kém hiệu quả: hầu hết phải đọc từ leader, **mất lợi ích của read scaling**. Có thể theo dõi **thời điểm cập nhật cuối** và trong **một phút** sau đó, mọi lần đọc đều đi tới leader. Cũng có thể **giám sát replication lag** và **không truy vấn** follower nào tụt quá **một phút** so với leader.
-3. **Client nhớ timestamp của lần ghi gần nhất.** Hệ thống bảo đảm replica phục vụ đọc cho người dùng đó đã phản ánh các cập nhật **ít nhất tới timestamp đó**. Nếu replica chưa đủ mới, chuyển đọc sang replica khác, hoặc **chờ** replica bắt kịp. Timestamp có thể là **logical timestamp** (thứ chỉ thứ tự ghi, như **log sequence number**) hoặc **đồng hồ hệ thống**; dùng đồng hồ thì việc **đồng bộ đồng hồ** trở nên tối quan trọng ("Unreliable Clocks", tr. 287, Chương 8).
+3. **Client nhớ timestamp của lần ghi gần nhất.** Hệ thống bảo đảm replica phục vụ đọc cho người dùng đó đã phản ánh các cập nhật **ít nhất tới timestamp đó**. Nếu replica chưa đủ mới, chuyển đọc sang replica khác, hoặc **chờ** replica bắt kịp. Timestamp có thể là **logical timestamp** (thứ chỉ thứ tự ghi, như **log sequence number**) hoặc **đồng hồ hệ thống**; dùng đồng hồ thì việc **đồng bộ đồng hồ** trở nên tối quan trọng ("Unreliable Clocks", tr. 287, [chương 8](chapter-08.md#b3)).
 4. **Replica ở nhiều datacenter** (để gần người dùng hoặc tăng availability) làm mọi thứ phức tạp thêm: request nào cần leader phục vụ thì phải được **định tuyến tới datacenter chứa leader**.
 
 ```mermaid
@@ -839,7 +839,7 @@ flowchart LR
 - **Xung đột tinh vi hơn:** hệ thống **đặt phòng họp** theo dõi phòng nào được nhóm nào đặt vào giờ nào. Ứng dụng phải bảo đảm mỗi phòng chỉ được **một nhóm** đặt tại một thời điểm (**không đặt chồng giờ**). Xung đột có thể xảy ra nếu hai lượt đặt khác nhau được tạo cho cùng phòng, cùng giờ. **Ngay cả khi ứng dụng kiểm tra phòng trống trước khi cho đặt**, vẫn có thể xung đột nếu hai lượt đặt được ghi trên **hai leader khác nhau**.
 - **Chưa có lời giải làm sẵn.** Các chương sau sẽ xây dần hiểu biết về vấn đề này: Chương 7 có thêm ví dụ về xung đột, Chương 12 bàn cách phát hiện và giải quyết xung đột trong hệ nhân bản có khả năng mở rộng.
 
-> **Bổ sung ngoài sách.** Điểm khó của ví dụ đặt phòng là hai lần ghi chạm vào **hai bản ghi khác nhau** (hai lượt đặt), nên so sánh từng bản ghi riêng lẻ không thấy xung đột. Cái bị vi phạm là một **ràng buộc trên nhiều bản ghi**. Glossary của sách (tr. 557) nhắc tới *write skew* ở "Write Skew and Phantoms" (tr. 246, Chương 7); có thể đó là cùng loại vấn đề. Điều này sẽ được kiểm chứng khi học Chương 7.
+> **Bổ sung ngoài sách.** Điểm khó của ví dụ đặt phòng là hai lần ghi chạm vào **hai bản ghi khác nhau** (hai lượt đặt), nên so sánh từng bản ghi riêng lẻ không thấy xung đột. Cái bị vi phạm là một **ràng buộc trên nhiều bản ghi**. Chương 7 xác nhận đây đúng là ***write skew***: tr. 249 liệt kê hệ thống đặt phòng họp làm ví dụ write skew, và tr. 251 xếp nó vào loại write skew do phantom (kiểm tra không có hàng nào rồi mới insert). Xem [chương 7](chapter-07.md#meeting-room-ch5).
 
 <a id="topologies"></a>
 
@@ -1076,7 +1076,7 @@ flowchart TB
 3. **Ghi đồng thời với đọc:** lần ghi có thể mới được phản ánh trên **một số** replica. Khi đó **không xác định** được lần đọc trả giá trị cũ hay mới.
 4. **Ghi thành công ở một số replica, thất bại ở số khác** (ví dụ đĩa một số node đầy), và tổng số replica thành công **ít hơn w**: lần ghi **không được rollback** trên các replica đã ghi thành công. Nghĩa là lần ghi bị báo **thất bại**, nhưng các lần đọc sau **có thể trả hoặc không trả** giá trị của nó [47].
 5. **Node mang giá trị mới hỏng**, và dữ liệu của nó được **khôi phục từ một replica mang giá trị cũ**: số replica lưu giá trị mới có thể **xuống dưới w**, phá vỡ điều kiện quorum.
-6. Ngay cả khi **mọi thứ chạy đúng**, vẫn có edge case **xui về thời điểm**, sẽ thấy ở "Linearizability and quorums" (tr. 334, Chương 9).
+6. Ngay cả khi **mọi thứ chạy đúng**, vẫn có edge case **xui về thời điểm**, sẽ thấy ở "Linearizability and quorums" (tr. 334, [chương 9](chapter-09.md#lin-quorums)).
 
 ```mermaid
 sequenceDiagram
@@ -1212,7 +1212,7 @@ Muốn eventually consistent, các replica phải **hội tụ về cùng một 
 - **What.** Một cách để hội tụ: mỗi replica chỉ lưu giá trị **"mới nhất"**, cho phép giá trị "cũ hơn" bị ghi đè và bỏ đi. Chỉ cần có cách xác định **không mơ hồ** lần ghi nào "mới hơn", và mọi lần ghi cuối cùng được chép tới mọi replica, thì các replica sẽ hội tụ.
 - **Vì sao "mới nhất" phải đặt trong ngoặc kép.** Ý tưởng này **dễ gây hiểu lầm**. Trong Hình 5-12, khi gửi request ghi, **không client nào biết về client kia**, nên không rõ lần ghi nào xảy ra trước. Thực ra nói lần nào xảy ra "trước" là **vô nghĩa**: hai lần ghi là ***concurrent*** (đồng thời), thứ tự của chúng **không xác định**.
 - **How.** Dù các lần ghi không có thứ tự tự nhiên, ta có thể **ép một thứ tự tùy ý**: gắn **timestamp** cho mỗi lần ghi, chọn timestamp lớn nhất là "mới nhất", và bỏ mọi lần ghi có timestamp sớm hơn. Thuật toán này gọi là ***last write wins* (LWW)**. Lúc sách được viết, đây là cách giải quyết xung đột **duy nhất** mà Cassandra hỗ trợ [53], và là tùy chọn trong Riak [35].
-- **Trade-off.** LWW đạt được hội tụ nhưng **trả giá bằng durability**. Nếu có nhiều lần ghi đồng thời vào cùng key, dù **tất cả đều được báo thành công** cho client (vì đã ghi tới w replica), **chỉ một lần sống sót**, các lần khác **bị bỏ âm thầm**. LWW còn có thể bỏ cả những lần ghi **không đồng thời**, như sẽ thấy ở "Timestamps for ordering events" (tr. 291, Chương 8).
+- **Trade-off.** LWW đạt được hội tụ nhưng **trả giá bằng durability**. Nếu có nhiều lần ghi đồng thời vào cùng key, dù **tất cả đều được báo thành công** cho client (vì đã ghi tới w replica), **chỉ một lần sống sót**, các lần khác **bị bỏ âm thầm**. LWW còn có thể bỏ cả những lần ghi **không đồng thời**, như sẽ thấy ở "Timestamps for ordering events" (tr. 291, [chương 8](chapter-08.md#timestamps-ordering)).
 - **Khi nào chấp nhận được.** Trong vài tình huống, như **caching**, mất ghi có thể chấp nhận được. Nếu **không được mất dữ liệu**, LWW là lựa chọn kém.
 - **Cách an toàn duy nhất để dùng LWW:** bảo đảm mỗi key **chỉ được ghi một lần**, rồi coi là **bất biến**, nhờ đó không có cập nhật đồng thời nào vào cùng key. Ví dụ, cách được khuyến nghị khi dùng Cassandra là lấy **UUID làm key**, để mỗi thao tác ghi có một key riêng [53].
 
@@ -1891,4 +1891,4 @@ Hãy tự trả lời trước, sau đó mới xem [phần đáp án](#g-dap-an)
 - Các phát biểu về sản phẩm cụ thể (PostgreSQL, MySQL, Oracle, SQL Server, MongoDB, RethinkDB, Kafka, RabbitMQ, VoltDB, CouchDB, Riak, Cassandra, Voldemort, DynamoDB, Tungsten Replicator, BDR, GoldenGate, Bucardo, Databus, Etherpad, Google Docs) phản ánh **thời điểm viết sách (khoảng 2016–2017)**. Ghi chú không kiểm chứng tình trạng hiện tại của chúng.
 - Các nội dung sau là **Bổ sung ngoài sách**: phép tính availability của cấu hình đồng bộ, mô tả chain replication, lý do vị trí log phải chính xác, cách dùng logical timestamp và vị trí đã đọc cho monotonic reads, ý nghĩa chữ "prefix", cách lách khóa tự tăng trong multi-leader, ví dụ G-Counter và three-way merge, Merkle tree trong anti-entropy, chứng minh giao nhau của quorum, bảng cấu hình n, w, r, quy tắc so sánh version vector.
 - Chương 2 (tr. 38) nói khác biệt về fault tolerance giữa relational và document database sẽ bàn ở Chương 5. Chương 5 không so sánh trực tiếp hai mô hình này; nó cho thấy cả relational lẫn nonrelational database đều dùng cùng các phương pháp replication (tr. 153, 162).
-- Liên hệ giữa ví dụ đặt phòng họp và *write skew* chỉ dựa trên Glossary (tr. 557) và mục lục; sẽ được kiểm chứng khi học Chương 7. Các liên hệ khác tới chương sau chỉ dựa trên tham chiếu chéo trong chương 5.
+- Liên hệ giữa ví dụ đặt phòng họp và *write skew* đã được kiểm chứng khi học Chương 7 (tr. 249, 251). Các liên hệ khác tới chương sau dựa trên tham chiếu chéo trong chương 5 và đã được nối tới mục tương ứng trong ghi chú các chương đó.
