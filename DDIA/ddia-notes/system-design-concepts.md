@@ -2,19 +2,23 @@
 
 Tệp này gom các nguyên lý System Design rút ra từ từng chương và liên kết về phần giải thích chi tiết. Mỗi nguyên lý ghi rõ nguồn trong sách (trang in, ấn bản thứ nhất 2017). Cột "Sẽ gặp lại" chỉ dựa trên tham chiếu chéo và mục lục của sách. Nội dung các chương đó sẽ được kiểm chứng khi học tới.
 
-Đã cập nhật đến: **Chương 1**.
+Đã cập nhật đến: **Chương 2**.
 
 ## Bản đồ tổng quan
 
 ```mermaid
 flowchart LR
-    REQ["Yêu cầu phi chức năng"] --> R["Reliability"]
+    REQ["Yêu cầu phi chức năng<br/>(chương 1)"] --> R["Reliability"]
     REQ --> S["Scalability"]
     REQ --> M["Maintainability"]
     R --> P1["P1–P5<br/>Fault tolerance"]
     S --> P6["P6–P11<br/>Tải, hiệu năng, cách mở rộng"]
     M --> P12["P12–P14<br/>Vận hành, đơn giản, tiến hóa"]
     S -.->|"giữ reliability<br/>dưới tải cao"| R
+    DM["Mô hình dữ liệu<br/>(chương 2)"] --> P15["P15–P17<br/>Chọn mô hình theo quan hệ"]
+    DM --> P18["P18–P19<br/>Schema, locality"]
+    DM --> P20["P20–P21<br/>Ngôn ngữ truy vấn"]
+    P20 -.->|"abstraction<br/>giúp tiến hóa"| P12
 ```
 
 ## Chương 1 — Reliable, Scalable, and Maintainable Applications
@@ -86,3 +90,40 @@ flowchart LR
 **P14. Evolvability: thiết kế để thay đổi ở cấp data system.** Yêu cầu chắc chắn sẽ thay đổi. Sự linh hoạt cần đạt ở cấp nhiều dịch vụ, không chỉ trong vài file code, và nó gắn chặt với simplicity.
 - Nguồn: tr. 21–22 · [chapter-01 B5.3](chapter-01.md#evolvability)
 - Sẽ gặp lại: encoding và schema evolution, Chương 4 (theo Preface, tr. xvi)
+
+## Chương 2 — Data Models and Query Languages
+
+### Chọn mô hình dữ liệu
+
+**P15. Chọn mô hình dữ liệu theo loại quan hệ giữa các mục dữ liệu.** Mỗi mô hình ngầm chứa giả định về cách dùng.
+- Cây one-to-many tự chứa, thường tải cả cây: document.
+- Có many-to-one hoặc many-to-many: relational.
+- Kết nối dày đặc, truy vấn duyệt độ dài thay đổi: graph.
+- Giả lập mô hình này bằng mô hình khác được, nhưng thường gượng.
+- Nguồn: tr. 27–28, 38–39, 49, 63 · [chapter-02 B2.5](chapter-02.md#rel-vs-doc-today), [D1](chapter-02.md#d1), [C2](chapter-02.md#c-so-do)
+
+**P16. Dự trù việc dữ liệu ngày càng kết nối hơn.** Phiên bản đầu khớp document không join, nhưng tính năng mới thường biến chuỗi chữ thành thực thể và đưa vào many-to-many. Khi đó document thuần buộc phải denormalize hoặc join trong ứng dụng, dẫn tới code phức tạp hơn và chậm hơn.
+- Nguồn: tr. 34–35, 39 · [chapter-02 B2.3](chapter-02.md#relationships)
+
+**P17. Normalize thông tin có nghĩa với con người; denormalize có ý thức để đọc nhanh.** ID không có nghĩa với người nên không bao giờ cần đổi. Bản sao thì tốn chi phí ghi và có nguy cơ không nhất quán. Denormalized giống một kết quả truy vấn tính sẵn (như cache timeline Twitter ở P8).
+- Nguồn: tr. 33–34; Glossary tr. 554, 556 · [chapter-02 B2.3](chapter-02.md#normalization), [D4](chapter-02.md#d4)
+- Sẽ gặp lại: caching, denormalization, derived data ở Part III (tr. 34)
+
+### Schema và locality
+
+**P18. Dữ liệu luôn có schema; chỉ cần quyết định kiểm tra nó ở đâu.** Schema-on-write (database áp đặt khi ghi) hợp khi mọi bản ghi cùng cấu trúc. Schema-on-read (code xử lý khi đọc) hợp với dữ liệu không đồng nhất hoặc do hệ thống ngoài quyết định, nhưng mọi code đọc phải xử lý mọi phiên bản định dạng. Với bảng lớn, điền giá trị mới lúc đọc thay vì `UPDATE` cả bảng.
+- Nguồn: tr. 39–41 · [chapter-02 B2.5](chapter-02.md#schema-flexibility), [D3](chapter-02.md#d3)
+- Sẽ gặp lại: schema và schema evolution, Chương 4 (tr. 41)
+
+**P19. Locality chỉ có lợi khi thường cần phần lớn dữ liệu cùng lúc.** Gom dữ liệu hay dùng cùng nhau vào một chỗ giảm số lần tra index và seek đĩa. Nhưng document lớn phải tải và ghi lại cả khối, nên hãy giữ document nhỏ và tránh ghi làm nó to ra. Locality cũng đạt được trong relational (Spanner interleaved tables, Oracle cluster tables, column-family của Bigtable).
+- Nguồn: tr. 41 · [chapter-02 B2.5](chapter-02.md#locality)
+- Sẽ gặp lại: locality ở Chương 3 (tr. 41)
+
+### Ngôn ngữ truy vấn
+
+**P20. Ưu tiên giao diện declarative để hệ thống được tự do tối ưu và tiến hóa.** Declarative chỉ mô tả kết quả, nên database có thể đổi index, layout, thứ tự lưu trữ, chạy song song mà không phá vỡ truy vấn. Query optimizer xây một lần, mọi ứng dụng hưởng lợi. Bài học đúng cả với SQL so với CODASYL, lẫn CSS so với DOM API.
+- Nguồn: tr. 37–38, 42–46 · [chapter-02 B3.0](chapter-02.md#declarative), [B2.4](chapter-02.md#relational-model), [D6](chapter-02.md#d6)
+
+**P21. Code chạy trong framework phân tán nên là hàm thuần.** Không side effect và không truy vấn thêm, để framework chạy ở bất kỳ đâu, theo thứ tự bất kỳ, và chạy lại khi lỗi. Nhưng API cấp thấp kiểu MapReduce khó dùng và ít cơ hội tối ưu, nên hệ thống thường tiến hóa về một ngôn ngữ declarative (aggregation pipeline).
+- Nguồn: tr. 46–48 · [chapter-02 B3.2](chapter-02.md#mapreduce)
+- Sẽ gặp lại: MapReduce, Chương 10 (tr. 46)

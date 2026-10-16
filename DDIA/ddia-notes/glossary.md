@@ -2,7 +2,12 @@
 
 Thuật ngữ tiếng Anh kèm giải thích tiếng Việt, bổ sung dần theo từng chương đã học. Số trang là trang in của ấn bản thứ nhất (2017). Thuật ngữ đánh dấu **(G)** cũng có trong Glossary cuối sách (tr. 553–558). Phần giải thích ở đây là diễn giải, đôi khi kèm ngữ cảnh từ chương đang học.
 
-Đã cập nhật đến: **Chương 1**.
+Đã cập nhật đến: **Chương 2**.
+
+- [Chương 1 — Reliable, Scalable, and Maintainable Applications](#chuong-1)
+- [Chương 2 — Data Models and Query Languages](#chuong-2)
+
+<a id="chuong-1"></a>
 
 ## Chương 1 — Reliable, Scalable, and Maintainable Applications
 
@@ -97,3 +102,98 @@ Thuật ngữ tiếng Anh kèm giải thích tiếng Việt, bổ sung dần the
 | **Essential complexity** | Độ phức tạp vốn có của bài toán, không loại bỏ được, chỉ quản lý được. Đối lập với accidental complexity, theo Fred Brooks (*No Silver Bullet*, tài liệu [31] của chương 1). | Simplicity |
 | **Fan-out on write / fan-out on read** | Tên thường dùng trong ngành cho cách 2 (tính sẵn khi ghi) và cách 1 (tính khi đọc) của Twitter. | Describing Load |
 | **Coordinated omission** | Lỗi đo khi client sinh tải chờ response trước rồi mới gửi tiếp, làm số đo lạc quan hơn thực tế. Thuật ngữ do Gil Tene phổ biến. | Describing Performance |
+
+<a id="chuong-2"></a>
+
+## Chương 2 — Data Models and Query Languages
+
+### Mô hình dữ liệu và lịch sử
+
+| Thuật ngữ | Tiếng Việt | Giải thích | Trang |
+| --- | --- | --- | --- |
+| **Data model** | Mô hình dữ liệu | Cách biểu diễn dữ liệu ở một lớp. Ảnh hưởng tới cả cách viết phần mềm lẫn cách nghĩ về bài toán. Ứng dụng là nhiều lớp mô hình chồng lên nhau. | tr. 27–28 |
+| **Relational model** | Mô hình quan hệ | Do Edgar Codd đề xuất năm 1970: dữ liệu là các relation, mỗi relation là tập không thứ tự các tuple. | tr. 28 |
+| **Relation / tuple** | Quan hệ / bộ | Trong SQL gọi là table (bảng) và row (hàng). | tr. 28 |
+| **RDBMS** | Hệ quản trị CSDL quan hệ | *Relational database management system*. | tr. 28 |
+| **Hierarchical model** | Mô hình phân cấp | Dữ liệu là cây các bản ghi lồng nhau, mỗi bản ghi đúng một cha. Dùng trong IMS. Giống mô hình JSON của document database. | tr. 36 |
+| **IMS** | — | *Information Management System* của IBM (1968), làm cho chương trình Apollo. Database doanh nghiệp phổ biến nhất thập niên 1970. | tr. 36 |
+| **Network model / CODASYL model** | Mô hình mạng | Tổng quát hóa hierarchical model: bản ghi có thể có nhiều cha. Liên kết giống con trỏ. Chuẩn hóa bởi ủy ban CODASYL. | tr. 36–37 |
+| **Access path** | Đường truy cập | Trong CODASYL: đường đi từ bản ghi gốc dọc theo chuỗi liên kết. Là cách duy nhất để tới một bản ghi, do lập trình viên tự chọn. | tr. 37 |
+| **Query optimizer** | Bộ tối ưu truy vấn | Thành phần tự quyết định thứ tự thực thi, index và phương pháp join. Thực chất là tự chọn access path. | tr. 37–38, 43 |
+| **Object databases / XML databases** | CSDL đối tượng / XML | Các đối thủ của relational model (cuối 1980s đến đầu 1990s, và đầu 2000s), không kéo dài. | tr. 29 |
+| **NoSQL** | — | Ban đầu là hashtag cho một meetup năm 2009 về database phân tán, mã nguồn mở, phi relational. Sau được diễn giải là *Not Only SQL*. Không chỉ một công nghệ cụ thể. | tr. 29 |
+| **Polyglot persistence** | Lưu trữ đa ngôn ngữ | Dùng relational database song song với nhiều loại datastore phi relational, mỗi loại cho use case phù hợp. | tr. 29 |
+| **Transaction processing / batch processing** | Xử lý giao dịch / xử lý theo lô | Hai use case gốc của relational database trong xử lý dữ liệu doanh nghiệp: giao dịch bán hàng, ngân hàng, đặt vé; và hóa đơn, lương, báo cáo. | tr. 28 |
+
+### Relational và document
+
+| Thuật ngữ | Tiếng Việt | Giải thích | Trang |
+| --- | --- | --- | --- |
+| **Impedance mismatch** | Lệch trở kháng | Sự lệch giữa đối tượng trong code và bảng, hàng, cột trong database. Thuật ngữ mượn từ điện tử. | tr. 29–30 |
+| **ORM** (*object-relational mapping*) | Ánh xạ đối tượng–quan hệ | Framework như ActiveRecord, Hibernate. Giảm code chuyển đổi nhưng không che giấu hoàn toàn khác biệt. | tr. 30 |
+| **Document model / document database** | Mô hình / CSDL tài liệu | Lưu dữ liệu thành document tự chứa (JSON, XML, BSON). Ví dụ: MongoDB, RethinkDB, CouchDB, Espresso. | tr. 31 |
+| **One-to-many** | Một-nhiều | Một người có nhiều công việc. Tạo thành cấu trúc cây, khớp tự nhiên với document. | tr. 30, 32 |
+| **Many-to-one** | Nhiều-một | Nhiều người cùng một vùng. Cần tham chiếu và join. | tr. 34 |
+| **Many-to-many** | Nhiều-nhiều | Người – tổ chức – trường học; người giới thiệu người. Điểm phân biệt quan trọng giữa các mô hình. | tr. 35, 49 |
+| **Normalized / normalization** **(G)** | Chuẩn hóa | Cấu trúc không có dư thừa hay trùng lặp: dữ liệu đổi thì chỉ sửa một chỗ. Quy tắc kinh nghiệm: nhân bản giá trị lẽ ra lưu một chỗ là chưa chuẩn hóa. | tr. 33, 556 |
+| **Denormalize** **(G)** | Phi chuẩn hóa | Cố ý đưa vào một ít dư thừa (thường dạng cache hay index) để đọc nhanh hơn. Giống một kết quả truy vấn tính sẵn. | tr. 34, 554 |
+| **Join** **(G)** | Kết nối | Ghép các bản ghi có điểm chung, thường khi một bản ghi tham chiếu bản ghi khác (foreign key, document reference, edge) và truy vấn cần lấy bản ghi được trỏ tới. | tr. 34, 555 |
+| **Foreign key / document reference** | Khóa ngoại / tham chiếu document | Định danh duy nhất dùng để tham chiếu mục liên quan, trong relational và document. Được giải lúc đọc. | tr. 38 |
+| **Shredding** | Băm nhỏ | Kỹ thuật relational tách một cấu trúc dạng document ra nhiều bảng. Có thể làm schema cồng kềnh. | tr. 39 |
+| **Schema** **(G)** | Lược đồ | Mô tả cấu trúc dữ liệu: các trường và kiểu dữ liệu. Có thể được kiểm tra ở nhiều thời điểm và thay đổi theo thời gian. | tr. 39, 556 |
+| **Schemaless** | Không schema | Cách gọi gây hiểu lầm cho document database: thực tế luôn có schema ngầm. | tr. 39 |
+| **Schema-on-read** | Schema khi đọc | Cấu trúc ngầm, chỉ diễn giải khi đọc. Giống kiểm tra kiểu động. | tr. 39–40 |
+| **Schema-on-write** | Schema khi ghi | Schema tường minh, database đảm bảo dữ liệu ghi vào tuân theo. Giống kiểm tra kiểu tĩnh. | tr. 39–40 |
+| **Migration** | Di chuyển schema | Đổi schema bằng `ALTER TABLE` và `UPDATE`. `ALTER TABLE` thường nhanh, trừ MySQL (sao chép bảng). `UPDATE` bảng lớn luôn chậm. | tr. 40 |
+| **Heterogeneous data** | Dữ liệu không đồng nhất | Các mục trong collection không cùng cấu trúc. Trường hợp schema-on-read có lợi. | tr. 40 |
+| **Locality** **(G)** | Tính cục bộ | Đặt dữ liệu thường cần cùng lúc vào cùng một chỗ. Lợi thế của document khi cần cả document. | tr. 41, 555 |
+| **BSON** | — | Biến thể nhị phân của JSON mà MongoDB dùng để lưu document. | tr. 41 |
+| **Interleaved tables / column-family** | Bảng xen kẽ / họ cột | Cách đạt locality ngoài document model: Spanner cho hàng bảng con nằm trong bảng cha; Bigtable (Cassandra, HBase) dùng column-family. | tr. 41 |
+| **Nonsimple domains** | Miền không đơn | Trong mô tả gốc của Codd: giá trị của một hàng có thể là một relation lồng bên trong, giống JSON trong SQL ngày nay. | tr. 42 |
+
+### Ngôn ngữ truy vấn
+
+| Thuật ngữ | Tiếng Việt | Giải thích | Trang |
+| --- | --- | --- | --- |
+| **Declarative** **(G)** | Khai báo | Mô tả thuộc tính kết quả cần có, không phải các bước để đạt được. Query optimizer quyết định cách thực thi. | tr. 43, 554 |
+| **Imperative** | Mệnh lệnh | Chỉ định các thao tác theo thứ tự nhất định. IMS và CODASYL dùng API truy vấn imperative. | tr. 42–43 |
+| **Relational algebra** | Đại số quan hệ | Nền toán học của relational model. SQL bám khá sát cấu trúc của nó. Ví dụ: toán tử chọn σ (sigma). | tr. 42–43 |
+| **CSS selector / XPath / XSL** | — | Ngôn ngữ declarative để chọn phần tử và tạo kiểu cho document trong trình duyệt. Sách dùng làm phép so sánh với SQL. | tr. 44–45 |
+| **DOM API** | — | API imperative của trình duyệt để thao tác document. Ví dụ đối lập với CSS. | tr. 45 |
+| **MapReduce** | — | Mô hình lập trình xử lý lượng dữ liệu lớn theo lô trên nhiều máy (Google). Nằm giữa declarative và imperative. Chi tiết ở Chương 10. | tr. 46 |
+| **Map (collect) / reduce (fold, inject)** | — | Hai hàm của MapReduce, có gốc từ lập trình hàm. Map phát ra cặp key-value; reduce gộp các value cùng key. | tr. 46–47 |
+| **Pure function** | Hàm thuần | Chỉ dùng dữ liệu đầu vào, không truy vấn thêm, không side effect. Cho phép chạy ở bất kỳ đâu, thứ tự bất kỳ, chạy lại khi lỗi. | tr. 48 |
+| **Aggregation pipeline** | — | Ngôn ngữ truy vấn declarative của MongoDB (từ 2.2), cú pháp JSON, sức biểu đạt tương đương một tập con SQL. | tr. 48 |
+
+### Graph
+
+| Thuật ngữ | Tiếng Việt | Giải thích | Trang |
+| --- | --- | --- | --- |
+| **Graph** **(G)** | Đồ thị | Cấu trúc gồm vertex và edge. | tr. 49, 555 |
+| **Vertex (node, entity)** | Đỉnh | Thứ có thể tham chiếu tới: người, địa điểm, trang web… | tr. 49 |
+| **Edge (relationship, arc)** | Cạnh | Kết nối từ vertex này tới vertex khác. | tr. 49 |
+| **Property graph** | Đồ thị thuộc tính | Vertex và edge đều có định danh và properties (key-value); edge có label, tail vertex, head vertex. Neo4j, Titan, InfiniteGraph. | tr. 50–51 |
+| **Tail vertex / head vertex** | Đỉnh đầu / đỉnh cuối | Vertex nơi edge bắt đầu và nơi edge kết thúc. | tr. 50–51 |
+| **Label** | Nhãn | Mô tả loại quan hệ của edge, cho phép nhiều loại thông tin trong một graph. | tr. 51 |
+| **Traverse** | Duyệt | Đi theo một đường qua chuỗi vertex, xuôi hoặc ngược. | tr. 51 |
+| **PageRank** | — | Thuật toán trên web graph để xác định độ phổ biến của trang web. | tr. 49 |
+| **Cypher** | — | Ngôn ngữ truy vấn declarative cho property graph (Neo4j). Ký hiệu mũi tên; `*0..` nghĩa là "không hoặc nhiều lần". | tr. 52–54 |
+| **Recursive common table expression** | Biểu thức bảng chung đệ quy | Cú pháp `WITH RECURSIVE` (từ SQL:1999) để biểu diễn duyệt độ dài thay đổi trong SQL. Dùng được nhưng vụng. | tr. 54 |
+| **Triple-store** | Kho bộ ba | Lưu thông tin dạng (subject, predicate, object). Gần tương đương property graph. Datomic, AllegroGraph. | tr. 55 |
+| **Subject / predicate / object** | Chủ ngữ / vị ngữ / tân ngữ | Ba thành phần của triple. Object là giá trị thì là property; object là vertex thì predicate là edge. | tr. 55–56 |
+| **Turtle / Notation3 (N3)** | — | Định dạng người đọc được cho dữ liệu RDF. Turtle là tập con của N3. | tr. 56–57 |
+| **Semantic web** | Web ngữ nghĩa | Ý tưởng website xuất bản dữ liệu máy đọc được để kết hợp thành "database của mọi thứ". Bị thổi phồng, chưa thành hiện thực. | tr. 57 |
+| **RDF** | — | *Resource Description Framework*: định dạng dữ liệu nhất quán cho semantic web. Subject, predicate, object thường là URI. | tr. 57–58 |
+| **URI namespace** | Không gian tên URI | Trong RDF, URI dùng làm namespace để dữ liệu nhiều bên kết hợp không xung đột. Không nhất thiết truy cập được. | tr. 58 |
+| **SPARQL** | — | Ngôn ngữ truy vấn cho triple-store RDF, đọc là "sparkle". Ra đời trước Cypher; Cypher mượn pattern matching từ nó. | tr. 59 |
+| **Gremlin** | — | Ngôn ngữ truy vấn graph imperative. | tr. 50 |
+| **Pregel** | — | Framework xử lý graph (Chương 10). | tr. 50 |
+| **Datalog** | — | Ngôn ngữ truy vấn cũ (học thuật 1980s), nền tảng cho các ngôn ngữ sau. Dữ liệu dạng predicate(subject, object); truy vấn xây từ rule. Dùng trong Datomic, Cascalog. | tr. 60–61 |
+| **Rule (Datalog)** | Luật | Định nghĩa predicate mới suy ra từ dữ liệu hoặc rule khác, có thể đệ quy. Áp dụng khi mọi predicate vế phải của `:-` khớp. | tr. 61–62 |
+
+### Bổ sung ngoài sách (liên quan chương 2)
+
+| Thuật ngữ | Giải thích | Liên quan đến |
+| --- | --- | --- |
+| **`$lookup` (MongoDB)** | Toán tử kiểu join trong aggregation pipeline của MongoDB, xuất hiện sau thời điểm sách viết. Hãy kiểm tra tài liệu phiên bản đang dùng. | Many-to-one, convergence |
+| **Backfill** | Chạy nền theo từng lô nhỏ để đưa dữ liệu cũ về định dạng mới sau khi đổi schema, thay vì một `UPDATE` khổng lồ. | Schema flexibility |

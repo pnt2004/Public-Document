@@ -6,7 +6,7 @@ Kho tài liệu học bằng tiếng Việt từ sách và tài liệu kỹ thu�
 
 | Thư mục | Mục đích | Trạng thái |
 | --- | --- | --- |
-| [DDIA](DDIA/README.md) | Học *Designing Data-Intensive Applications* của Martin Kleppmann và tư duy về hệ thống dữ liệu. | Đã xác minh ấn bản (First Edition, 2017) và mục lục; đã có [ghi chú chương 1](DDIA/ddia-notes/chapter-01.md). |
+| [DDIA](DDIA/README.md) | Học *Designing Data-Intensive Applications* của Martin Kleppmann và tư duy về hệ thống dữ liệu. | Đã xác minh ấn bản (First Edition, 2017) và mục lục; đã có ghi chú [chương 1](DDIA/ddia-notes/chapter-01.md) và [chương 2](DDIA/ddia-notes/chapter-02.md). |
 
 Mỗi dự án mới cần một thư mục riêng gồm `README.md` mô tả dự án và `init/` chứa **tệp nguồn gốc** cùng `DETAIL.md` ghi rõ cần tạo những gì, phạm vi, mức độ chi tiết và định dạng đầu ra. Skill là quy trình dùng chung; `DETAIL.md` là yêu cầu cụ thể của từng dự án.
 
