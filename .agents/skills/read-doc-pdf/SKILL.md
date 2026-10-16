@@ -1,6 +1,6 @@
 ---
 name: read-doc-pdf
-description: Use when studying a user-provided technical PDF in this project, especially Designing Data-Intensive Applications (DDIA), and creating source-grounded Vietnamese chapter notes about concepts and system design.
+description: Use when turning a user-provided technical PDF in a project folder into source-grounded Vietnamese study materials using that project's README.md and init/DETAIL.md.
 ---
 
 # Read technical PDFs for deep understanding
@@ -21,6 +21,6 @@ Inspect the PDF's title/copyright pages and table of contents to establish its e
 
 Use the supplied PDF as the primary source and cite pages or sections for substantive claims where possible. Paraphrase in natural Vietnamese rather than copying long passages. Label outside explanations **Bổ sung ngoài sách** and invented examples **Ví dụ minh họa do AI xây dựng**.
 
-Follow the project's requested output structure and the source's order of reasoning. For DDIA, `DDIA/init/DETAIL.md` defines the chapter-note format, conceptual depth, self-check questions, and incremental chapter scope. Explain What, Why, How, examples, trade-offs, and system design decisions where they help the reader understand the concept; use Mermaid and comparison tables when useful.
+Follow the project's requested output structure and the source's order of reasoning. For DDIA, use `DDIA/init/DETAIL.md`; for HighPerformanceSQL, use `HighPerformanceSQL/init/DETAIL.md`. Explain What, Why, How, examples, trade-offs, and design or operational decisions where they help the reader understand the concept; use Mermaid and comparison tables when useful.
 
 Before finishing, compare the requested unit against its source outline and `init/DETAIL.md`. Check technical accuracy, omitted arguments, terminology, links, and labels. State any unverified details or unreadable pages.
