@@ -14,4 +14,4 @@ PDF hiện có trong `init/` là **Fourth Edition** của *High Performance MySQ
 
 Tài liệu được tạo theo từng giai đoạn trong `notes/`: thông tin nguồn và mục lục, learning roadmap, glossary, concept map, ghi chú theo chương, bài thực hành phù hợp và phần giải thích đáp án riêng. Cấu trúc và tiêu chuẩn nội dung nằm trong [init/DETAIL.md](init/DETAIL.md).
 
-**Trạng thái:** Đã có PDF và prompt được chuẩn hóa; chưa tạo tài liệu học. Lần đầu dùng `$read-doc-pdf` cho dự án này sẽ xác minh mục lục và tạo roadmap trước khi viết chương 1.
+**Trạng thái:** Đã xác minh ấn bản (Fourth Edition, 11/2021, ISBN 978-1-492-08051-0), mục lục và quy ước trang (trang PDF = trang in + 22). Đã hoàn thành ghi chú **cả 13 chương và 2 phụ lục**, kèm đáp án câu tự kiểm tra, bài thực hành (phần lớn đã chạy thật trên MySQL 8.0.42), [glossary](notes/glossary.md), [roadmap](notes/learning-roadmap.md) và [concept map](notes/concept-map.md). Bắt đầu từ [`notes/README.md`](notes/README.md).
