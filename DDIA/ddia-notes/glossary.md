@@ -2,11 +2,12 @@
 
 Thuật ngữ tiếng Anh kèm giải thích tiếng Việt, bổ sung dần theo từng chương đã học. Số trang là trang in của ấn bản thứ nhất (2017). Thuật ngữ đánh dấu **(G)** cũng có trong Glossary cuối sách (tr. 553–558). Phần giải thích ở đây là diễn giải, đôi khi kèm ngữ cảnh từ chương đang học.
 
-Đã cập nhật đến: **Chương 3**.
+Đã cập nhật đến: **Chương 4**.
 
 - [Chương 1 — Reliable, Scalable, and Maintainable Applications](#chuong-1)
 - [Chương 2 — Data Models and Query Languages](#chuong-2)
 - [Chương 3 — Storage and Retrieval](#chuong-3)
+- [Chương 4 — Encoding and Evolution](#chuong-4)
 
 <a id="chuong-1"></a>
 
@@ -306,3 +307,95 @@ Thuật ngữ tiếng Anh kèm giải thích tiếng Việt, bổ sung dần the
 | --- | --- | --- |
 | **False positive (Bloom filter)** | Bloom filter có thể báo "có thể có" cho key thực ra không có, nhưng không bao giờ báo sai rằng key không có. | Performance optimizations |
 | **Z-order curve / Hilbert curve** | Hai space-filling curve hay dùng: điểm gần nhau trong không gian thường có số gần nhau. | Multi-dimensional indexes |
+
+<a id="chuong-4"></a>
+
+## Chương 4 — Encoding and Evolution
+
+### Tương thích và mã hóa
+
+| Thuật ngữ | Tiếng Việt | Giải thích | Trang |
+| --- | --- | --- | --- |
+| **Rolling upgrade / staged rollout** | Nâng cấp cuốn chiếu | Triển khai bản mới lên vài node một lúc, kiểm tra rồi đi tiếp. Không downtime, nhưng code cũ và mới cùng chạy. | tr. 112, 139 |
+| **Backward compatibility** | Tương thích ngược | Code **mới** đọc được dữ liệu do code **cũ** ghi. Thường dễ. | tr. 112 |
+| **Forward compatibility** | Tương thích xuôi | Code **cũ** đọc được dữ liệu do code **mới** ghi. Khó hơn: phải bỏ qua phần thêm vào. | tr. 112 |
+| **Encoding / serialization / marshalling** | Mã hóa | Biến cấu trúc dữ liệu trong bộ nhớ thành chuỗi byte tự chứa. Không phải encryption. Sách dùng chữ encoding để tránh nhầm với nghĩa khác của *serialization* trong transaction (Chương 7). | tr. 113 |
+| **Decoding / parsing / deserialization / unmarshalling** | Giải mã | Biến chuỗi byte trở lại cấu trúc trong bộ nhớ. | tr. 113 |
+| **Language-specific format** | Định dạng riêng của ngôn ngữ | `java.io.Serializable`, Ruby `Marshal`, Python `pickle`, Kryo. Tiện nhưng khóa ngôn ngữ, gây lỗ hổng bảo mật, bỏ qua versioning. | tr. 113–114 |
+| **IEEE 754 double / 2⁵³** | Số thực độ chính xác kép | Số nguyên lớn hơn 2⁵³ không biểu diễn chính xác được; vấn đề khi JavaScript parse số lớn trong JSON. | tr. 114 |
+| **Base64** | — | Mã hóa dữ liệu nhị phân thành văn bản; làm dữ liệu to thêm 33%. | tr. 114 |
+| **XML Schema / JSON Schema** | — | Ngôn ngữ schema tùy chọn, mạnh nhưng phức tạp. | tr. 115, 127 |
+| **Data interchange format** | Định dạng trao đổi dữ liệu | Định dạng gửi dữ liệu giữa các tổ chức; ở đây việc thống nhất quan trọng hơn hiệu quả. | tr. 115 |
+| **Binary JSON variants** | Biến thể nhị phân của JSON | MessagePack, BSON, BJSON, UBJSON, BISON, Smile. Vẫn chứa tên trường. | tr. 115–116 |
+| **MessagePack** | — | Mã hóa nhị phân cho JSON; bản ghi mẫu 66 byte so với 81 byte JSON. | tr. 116 |
+
+### Định dạng nhị phân có schema
+
+| Thuật ngữ | Tiếng Việt | Giải thích | Trang |
+| --- | --- | --- | --- |
+| **Thrift / Protocol Buffers (protobuf)** | — | Thư viện mã hóa nhị phân cần schema (Facebook, Google; mở mã 2007–08). Dùng field tag. | tr. 117 |
+| **IDL** (*interface definition language*) | Ngôn ngữ định nghĩa giao diện | Ngôn ngữ viết schema của Thrift, Protocol Buffers, Avro. | tr. 117 |
+| **Code generation** | Sinh code | Từ schema sinh lớp trong nhiều ngôn ngữ. Hữu ích cho ngôn ngữ kiểu tĩnh, ít ý nghĩa cho kiểu động. | tr. 118, 127 |
+| **BinaryProtocol / CompactProtocol** | — | Hai định dạng nhị phân của Thrift: 59 byte và 34 byte cho bản ghi mẫu. | tr. 118–119 |
+| **Field tag** | Thẻ trường | Số định danh trường trong schema, thay cho tên trường trong dữ liệu. Đổi tên trường được, **không đổi tag được**, không dùng lại tag. | tr. 119–121 |
+| **Variable-length integer (varint)** | Số nguyên độ dài thay đổi | Bit cao nhất mỗi byte báo còn byte nữa; số nhỏ tốn ít byte (1337 chỉ 2 byte). | tr. 119 |
+| **required / optional** | Bắt buộc / tùy chọn | Không ảnh hưởng mã hóa; `required` chỉ bật kiểm tra lúc chạy. Trường thêm sau phải optional hoặc có mặc định. | tr. 120–121 |
+| **repeated** | Lặp | Đánh dấu của Protocol Buffers thay cho kiểu list: cùng tag xuất hiện nhiều lần. Cho phép đổi optional thành repeated. | tr. 121 |
+| **Schema evolution** | Tiến hóa schema | Thay đổi schema theo thời gian mà vẫn giữ backward và forward compatibility. | tr. 120 |
+| **Avro** | — | Định dạng nhị phân (Hadoop, 2009), schema không có tag, dữ liệu chỉ là giá trị nối nhau; bản ghi mẫu 32 byte. | tr. 122–123 |
+| **Avro IDL** | — | Ngôn ngữ schema của Avro cho người viết; ngoài ra có dạng JSON cho máy đọc. | tr. 122 |
+| **Writer's schema** | Schema của người ghi | Phiên bản schema ứng dụng dùng khi mã hóa dữ liệu. | tr. 123 |
+| **Reader's schema** | Schema của người đọc | Schema ứng dụng kỳ vọng khi giải mã. Chỉ cần tương thích với writer's schema; Avro phân giải theo tên trường. | tr. 123–124 |
+| **Union type** | Kiểu hợp | Kiểu của Avro cho phép một trong nhiều kiểu, ví dụ {null, long}. Cách duy nhất để trường được là null. | tr. 125 |
+| **Default value** | Giá trị mặc định | Điền khi reader cần trường mà dữ liệu không có. Avro chỉ cho thêm hoặc xóa trường có mặc định. | tr. 124 |
+| **Alias** | Bí danh | Tên cũ của trường khai báo trong reader's schema; đổi tên trường nhờ alias là backward nhưng không forward compatible. | tr. 125 |
+| **Object container file** | Tệp chứa đối tượng | Định dạng file Avro: writer's schema ở đầu file, rồi nhiều bản ghi. Tự mô tả. | tr. 125, 127 |
+| **Schema version database** | CSDL phiên bản schema | Lưu các phiên bản schema; là tài liệu và cho phép kiểm tra tương thích. Phiên bản là số tăng dần hoặc hash. | tr. 125–126 |
+| **Dynamically generated schema** | Schema sinh động | Schema sinh tự động từ nguồn khác (vd từ bảng database). Avro hợp hơn Thrift, protobuf. | tr. 126 |
+| **Self-describing** | Tự mô tả | File chứa đủ metadata (schema) để đọc mà không cần thông tin ngoài. | tr. 127 |
+| **ASN.1 / DER** | — | Ngôn ngữ schema chuẩn hóa từ 1984, có tag; DER dùng cho chứng chỉ X.509. Phức tạp, tài liệu kém. | tr. 127–128 |
+| **ODBC / JDBC** | — | API mà driver database dùng để decode giao thức mạng riêng của database. | tr. 128 |
+
+### Luồng dữ liệu
+
+| Thuật ngữ | Tiếng Việt | Giải thích | Trang |
+| --- | --- | --- | --- |
+| **Dataflow** | Luồng dữ liệu | Cách dữ liệu đi giữa các tiến trình: qua database, qua service, qua message. | tr. 128–129 |
+| **Unknown fields** | Trường lạ | Trường do code mới thêm mà code cũ không biết; phải được giữ nguyên khi code cũ đọc, sửa, ghi lại. | tr. 129–130 |
+| **Data outlives code** | Dữ liệu sống lâu hơn code | Code thay trong vài phút, nhưng dữ liệu cũ vẫn ở định dạng gốc trong database nhiều năm. | tr. 130 |
+| **Migration** | Di chuyển dữ liệu | Ghi lại dữ liệu theo schema mới; tốn kém với dataset lớn. | tr. 130 |
+| **Archival storage** | Lưu trữ lâu dài | Snapshot hoặc dump database, nên mã hóa bằng schema mới nhất; hợp với Avro hoặc Parquet. | tr. 131 |
+| **Service** | Dịch vụ | API mà server phơi ra qua mạng; chỉ cho input, output định sẵn (đóng gói). | tr. 131–132 |
+| **Ajax** | — | JavaScript trong trình duyệt dùng `XMLHttpRequest` làm HTTP client. | tr. 131 |
+| **SOA / microservices** | Kiến trúc hướng dịch vụ / vi dịch vụ | Chia ứng dụng thành service nhỏ theo chức năng, triển khai và tiến hóa độc lập. | tr. 132 |
+| **Web service** | Dịch vụ web | Service dùng HTTP làm giao thức nền. | tr. 132 |
+| **Middleware** | Phần mềm trung gian | Phần mềm hỗ trợ service gọi service trong cùng tổ chức. | tr. 132 |
+| **REST / RESTful** | — | Triết lý thiết kế trên nguyên tắc HTTP: URL định danh tài nguyên, dùng tính năng HTTP. | tr. 133 |
+| **HATEOAS** | — | *Hypermedia as the engine of application state*; chủ đề tranh cãi trong phe REST. | tr. 133 |
+| **SOAP / WS-\* / WSDL** | — | Giao thức XML cho request API; rừng tiêu chuẩn WS-\*; WSDL mô tả API và cho phép sinh code. | tr. 133 |
+| **OpenAPI / Swagger** | — | Định dạng mô tả RESTful API và sinh tài liệu. | tr. 133 |
+| **RPC** (*remote procedure call*) | Gọi thủ tục từ xa | Làm request tới service từ xa trông giống gọi hàm cục bộ. Có lỗi căn bản. | tr. 134 |
+| **EJB / RMI / DCOM / CORBA** | — | Các công nghệ RPC cũ: giới hạn Java, giới hạn Microsoft, hoặc quá phức tạp và không tương thích phiên bản. | tr. 134 |
+| **Location transparency** | Trong suốt về vị trí | Abstraction che giấu việc đối tượng ở cục bộ hay ở xa. Hợp với actor model hơn RPC. | tr. 134, 138 |
+| **Timeout** | Hết thời gian chờ | Request trả về không có kết quả; không biết request đã tới nơi chưa. | tr. 134 |
+| **Idempotent / idempotence** **(G)** | Lũy đẳng | Thao tác thử lại an toàn: thực hiện nhiều lần có cùng hiệu quả như một lần. Cần để thử lại request mạng. | tr. 134, 555 |
+| **gRPC / Finagle / Rest.li** | — | Framework RPC thế hệ mới: gRPC dùng Protocol Buffers, Finagle dùng Thrift, Rest.li dùng JSON qua HTTP. | tr. 135 |
+| **Future / promise** | — | Đóng gói hành động bất đồng bộ có thể thất bại; dễ gửi nhiều request song song. | tr. 135 |
+| **Stream (gRPC)** | Luồng | Một lời gọi gồm chuỗi request và response theo thời gian. | tr. 135 |
+| **Service discovery** | Khám phá dịch vụ | Cho client biết địa chỉ IP và cổng của service. | tr. 135 |
+| **API versioning** | Đánh phiên bản API | Chưa có thống nhất: số phiên bản trong URL, trong header Accept, hoặc lưu theo API key phía server. | tr. 136 |
+| **Asynchronous** **(G)** | Bất đồng bộ | Không chờ việc hoàn thành và không giả định nó mất bao lâu. | tr. 137, 553 |
+| **Message broker / message queue / message-oriented middleware** | Trung gian tin nhắn | Trung gian lưu tạm message: đệm, gửi lại, tách rời người gửi và nhận. RabbitMQ, ActiveMQ, HornetQ, NATS, Kafka. | tr. 137 |
+| **Queue / topic** | Hàng đợi / chủ đề | Đích có tên mà producer gửi message tới và consumer (subscriber) nhận từ đó. Topic chỉ một chiều. | tr. 137–138 |
+| **Producer / consumer / subscriber** | Bên sản xuất / bên tiêu thụ / người đăng ký | Bên gửi và bên nhận message qua broker. | tr. 137 |
+| **Reply queue** | Hàng đợi trả lời | Queue riêng để consumer gửi trả lời cho người gửi ban đầu, tạo luồng giống RPC. | tr. 138 |
+| **Actor model** | Mô hình actor | Logic đóng gói trong actor có trạng thái riêng, giao tiếp bằng message bất đồng bộ, xử lý một message một lúc. | tr. 138 |
+| **Distributed actor framework** | Framework actor phân tán | Dùng actor model qua nhiều node: Akka, Orleans, Erlang OTP. Vẫn cần tương thích để rolling upgrade. | tr. 138–139 |
+
+### Bổ sung ngoài sách (liên quan chương 4)
+
+| Thuật ngữ | Giải thích | Liên quan đến |
+| --- | --- | --- |
+| **Zigzag encoding** | Đặt bit dấu ở cuối (mã hóa n thành 2n với số không âm) để số âm nhỏ cũng tốn ít byte. Thrift CompactProtocol và Avro dùng cách này: 1337 thành `f2 14`. | Varint |
+| **Schema registry** | Dịch vụ lưu phiên bản schema; producer gắn ID schema vào message, consumer dùng ID lấy writer's schema; có thể từ chối schema phá tương thích. | Avro, message broker |
+| **Idempotency key** | Khóa do client gửi kèm request để server nhận ra request trùng khi client thử lại. | RPC, idempotence |

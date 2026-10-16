@@ -42,7 +42,7 @@ Cột "Trang in" là phạm vi trang của cả chương, kể cả danh sách t
 | I | 1 | Reliable, Scalable, and Maintainable Applications | 3–26 | 25–48 | Thinking About Data Systems · Reliability · Scalability · Maintainability | [chapter-01.md](chapter-01.md) |
 | I | 2 | Data Models and Query Languages | 27–68 | 49–90 | Relational Model Versus Document Model · Query Languages for Data · Graph-Like Data Models | [chapter-02.md](chapter-02.md) |
 | I | 3 | Storage and Retrieval | 69–110 | 91–132 | Data Structures That Power Your Database · Transaction Processing or Analytics? · Column-Oriented Storage | [chapter-03.md](chapter-03.md) |
-| I | 4 | Encoding and Evolution | 111–144 | 133–166 | Formats for Encoding Data · Modes of Dataflow | Chưa có |
+| I | 4 | Encoding and Evolution | 111–144 | 133–166 | Formats for Encoding Data · Modes of Dataflow | [chapter-04.md](chapter-04.md) |
 | II | 5 | Replication | 151–198 | 173–220 | Leaders and Followers · Problems with Replication Lag · Multi-Leader Replication · Leaderless Replication | Chưa có |
 | II | 6 | Partitioning | 199–220 | 221–242 | Partitioning and Replication · Partitioning of Key-Value Data · Partitioning and Secondary Indexes · Rebalancing Partitions · Request Routing | Chưa có |
 | II | 7 | Transactions | 221–272 | 243–294 | The Slippery Concept of a Transaction · Weak Isolation Levels · Serializability | Chưa có |
@@ -62,8 +62,9 @@ Phần cuối sách: Glossary (tr. 553–558), Index (tr. 559–590), About the 
 | [`chapter-01.md`](chapter-01.md) | Chương 1: Reliability, Scalability, Maintainability. | Hoàn thành |
 | [`chapter-02.md`](chapter-02.md) | Chương 2: mô hình relational, document, graph và các ngôn ngữ truy vấn. | Hoàn thành |
 | [`chapter-03.md`](chapter-03.md) | Chương 3: hash index, LSM-tree, B-tree, OLTP và OLAP, lưu trữ theo cột. | Hoàn thành |
-| [`glossary.md`](glossary.md) | Thuật ngữ tiếng Anh kèm giải thích tiếng Việt, bổ sung dần theo từng chương. | Đã có thuật ngữ chương 1–3 |
-| [`system-design-concepts.md`](system-design-concepts.md) | Các nguyên lý System Design và liên kết đến chương liên quan. | Đã có nguyên lý chương 1–3 |
+| [`chapter-04.md`](chapter-04.md) | Chương 4: định dạng mã hóa (JSON, Thrift, Protocol Buffers, Avro), schema evolution, luồng dữ liệu qua database, REST/RPC và message. | Hoàn thành |
+| [`glossary.md`](glossary.md) | Thuật ngữ tiếng Anh kèm giải thích tiếng Việt, bổ sung dần theo từng chương. | Đã có thuật ngữ chương 1–4 |
+| [`system-design-concepts.md`](system-design-concepts.md) | Các nguyên lý System Design và liên kết đến chương liên quan. | Đã có nguyên lý chương 1–4 |
 
 Mỗi chương chỉ được viết sau khi đã đọc phần sách tương ứng. Chương sau chỉ bắt đầu khi chương trước đã hoàn thành và được kiểm tra.
 

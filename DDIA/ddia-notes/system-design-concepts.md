@@ -2,7 +2,7 @@
 
 Tệp này gom các nguyên lý System Design rút ra từ từng chương và liên kết về phần giải thích chi tiết. Mỗi nguyên lý ghi rõ nguồn trong sách (trang in, ấn bản thứ nhất 2017). Cột "Sẽ gặp lại" chỉ dựa trên tham chiếu chéo và mục lục của sách. Nội dung các chương đó sẽ được kiểm chứng khi học tới.
 
-Đã cập nhật đến: **Chương 3**.
+Đã cập nhật đến: **Chương 4**.
 
 ## Bản đồ tổng quan
 
@@ -22,6 +22,9 @@ flowchart LR
     ST["Lưu trữ và truy xuất<br/>(chương 3)"] --> P22["P22–P25<br/>Index, storage engine OLTP"]
     ST --> P26["P26–P29<br/>Analytics, lưu theo cột"]
     P22 -.->|"đọc nhanh,<br/>ghi chậm"| P17
+    EN["Mã hóa và tiến hóa<br/>(chương 4)"] --> P30["P30–P33<br/>Tương thích, schema"]
+    EN --> P34["P34–P37<br/>Luồng dữ liệu"]
+    P30 -.->|"điều kiện để"| P14
 ```
 
 ## Chương 1 — Reliable, Scalable, and Maintainable Applications
@@ -164,3 +167,35 @@ flowchart LR
 
 **P29. Tổng hợp tính sẵn để tăng tốc, nhưng giữ dữ liệu thô.** Materialized view và data cube làm một số truy vấn rất nhanh, nhưng phải cập nhật khi dữ liệu gốc đổi và không trả lời được câu hỏi ngoài các dimension đã chọn. Cùng đánh đổi với denormalization (P17) và cache timeline Twitter (P8).
 - Nguồn: tr. 101–103 · [chapter-03 B8.7](chapter-03.md#materialized-views), [D9](chapter-03.md#d9)
+
+## Chương 4 — Encoding and Evolution
+
+### Tương thích và schema
+
+**P30. Luôn giả định code cũ và code mới cùng chạy, nên giữ tương thích cả hai chiều.** Rolling upgrade và client chậm cập nhật khiến nhiều phiên bản cùng tồn tại. Backward compatibility (code mới đọc dữ liệu cũ) thường dễ; forward compatibility (code cũ đọc dữ liệu mới, bỏ qua phần thêm vào) phải được thiết kế từ đầu. Đây là điều kiện để có evolvability (P14).
+- Nguồn: tr. 111–112, 139 · [chapter-04 A](chapter-04.md#compatibility)
+
+**P31. Không dùng định dạng mã hóa riêng của ngôn ngữ cho dữ liệu lưu lâu hay đi qua ranh giới hệ thống.** Nó khóa ngôn ngữ, bỏ qua versioning, và decode dữ liệu không tin cậy có thể dẫn tới thực thi code từ xa.
+- Nguồn: tr. 113–114, 139 · [chapter-04 B2](chapter-04.md#b2)
+
+**P32. Dùng định dạng nhị phân có schema cho dữ liệu nội bộ, và tuân thủ quy tắc tiến hóa.** Protocol Buffers, Thrift (field tag) và Avro (writer/reader schema) gọn và có ngữ nghĩa tương thích rõ ràng. Quy tắc: trường mới phải optional hoặc có mặc định; không đổi hay dùng lại tag; cẩn thận khi đổi kiểu. JSON, XML vẫn hợp cho trao đổi giữa tổ chức, nhưng cẩn thận với số lớn và dữ liệu nhị phân.
+- Nguồn: tr. 114–125, 128 · [chapter-04 B4.3](chapter-04.md#tag-evolution), [B5.3](chapter-04.md#avro-evolution), [D2](chapter-04.md#d2)
+
+**P33. Quản lý schema như tài sản: lưu các phiên bản và kiểm tra tương thích trước khi triển khai.** Schema bắt buộc để decode nên luôn cập nhật, là tài liệu tốt; một database các phiên bản schema cho phép reader tìm writer's schema và chặn thay đổi phá tương thích. Với schema sinh tự động (export database), chọn định dạng không cần gán tag bằng tay như Avro.
+- Nguồn: tr. 125–128 · [chapter-04 B5.4](chapter-04.md#which-writer-schema), [B5.5](chapter-04.md#dynamic-schema), [B6](chapter-04.md#b6)
+
+### Luồng dữ liệu
+
+**P34. Dữ liệu sống lâu hơn code: thiết kế để đọc được mọi phiên bản dữ liệu từng ghi.** Database chứa dữ liệu ghi 5 mili giây trước và 5 năm trước. Migration tốn kém, nên dựa vào schema evolution để cả database trông như một schema. Khi snapshot hay archive, mã hóa nhất quán bằng schema mới nhất.
+- Nguồn: tr. 129–131 · [chapter-04 B7.1](chapter-04.md#data-outlives-code)
+
+**P35. Code cũ phải giữ nguyên trường mình không hiểu khi đọc, sửa, ghi lại.** Giải mã thành model object rồi mã hóa lại có thể làm rơi trường mới (Hình 4-7). Áp dụng cho cả database lẫn consumer xuất bản lại message.
+- Nguồn: tr. 129–130, 138 · [chapter-04 B7.1](chapter-04.md#unknown-fields)
+
+**P36. Đừng giả vờ request mạng là lời gọi hàm.** Request có thể mất, timeout không rõ kết cục, thử lại gây trùng lặp (cần idempotence), độ trễ biến động. Dùng framework nói rõ điều đó (future, stream). Với service, cập nhật server trước: backward compatibility cho request, forward compatibility cho response; với API cho tổ chức khác, giữ tương thích rất lâu hoặc chạy nhiều phiên bản API song song.
+- Nguồn: tr. 134–136 · [chapter-04 B7.2](chapter-04.md#rpc-problems), [D5](chapter-04.md#d-so-sanh)
+- Sẽ gặp lại: timeout (Chương 8), idempotence (Chương 11, tr. 478)
+
+**P37. Dùng message broker để tách rời và tăng độ tin cậy giữa các thành phần.** Broker đệm khi bên nhận chết hay quá tải, gửi lại message, cho một message tới nhiều consumer, và người gửi không cần biết địa chỉ người nhận. Giao tiếp một chiều, bất đồng bộ; cần tương thích cả hai chiều để đổi producer và consumer theo thứ tự bất kỳ.
+- Nguồn: tr. 136–139 · [chapter-04 B7.3](chapter-04.md#message-passing), [D7](chapter-04.md#d-so-sanh)
+- Sẽ gặp lại: so sánh message broker và nối chuỗi topic, Chương 11
