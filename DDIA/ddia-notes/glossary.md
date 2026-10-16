@@ -2,10 +2,11 @@
 
 Thuật ngữ tiếng Anh kèm giải thích tiếng Việt, bổ sung dần theo từng chương đã học. Số trang là trang in của ấn bản thứ nhất (2017). Thuật ngữ đánh dấu **(G)** cũng có trong Glossary cuối sách (tr. 553–558). Phần giải thích ở đây là diễn giải, đôi khi kèm ngữ cảnh từ chương đang học.
 
-Đã cập nhật đến: **Chương 2**.
+Đã cập nhật đến: **Chương 3**.
 
 - [Chương 1 — Reliable, Scalable, and Maintainable Applications](#chuong-1)
 - [Chương 2 — Data Models and Query Languages](#chuong-2)
+- [Chương 3 — Storage and Retrieval](#chuong-3)
 
 <a id="chuong-1"></a>
 
@@ -197,3 +198,111 @@ Thuật ngữ tiếng Anh kèm giải thích tiếng Việt, bổ sung dần the
 | --- | --- | --- |
 | **`$lookup` (MongoDB)** | Toán tử kiểu join trong aggregation pipeline của MongoDB, xuất hiện sau thời điểm sách viết. Hãy kiểm tra tài liệu phiên bản đang dùng. | Many-to-one, convergence |
 | **Backfill** | Chạy nền theo từng lô nhỏ để đưa dữ liệu cũ về định dạng mới sau khi đổi schema, thay vì một `UPDATE` khổng lồ. | Schema flexibility |
+
+<a id="chuong-3"></a>
+
+## Chương 3 — Storage and Retrieval
+
+### Nền tảng và log-structured storage
+
+| Thuật ngữ | Tiếng Việt | Giải thích | Trang |
+| --- | --- | --- | --- |
+| **Storage engine** | Bộ máy lưu trữ | Phần của database lo việc lưu dữ liệu và tìm lại. Có loại tối ưu cho OLTP, có loại cho analytics. | tr. 69 |
+| **Log** **(G)** | Nhật ký | Trong sách: chuỗi bản ghi **chỉ ghi nối thêm**, không nhất thiết người đọc được. Khác với log ứng dụng. | tr. 71, 556 |
+| **Append-only** | Chỉ ghi nối thêm | Chỉ thêm vào cuối file, không sửa dữ liệu đã ghi. | tr. 71, 75 |
+| **Index** **(G)** | Chỉ mục | Cấu trúc phụ dẫn xuất từ dữ liệu chính, giúp tìm nhanh bản ghi theo giá trị của một trường. Đọc nhanh hơn, ghi chậm hơn. | tr. 71, 555 |
+| **Hash map / hash table** | Bảng băm | Cấu trúc ánh xạ key tới value trong bộ nhớ. Dùng làm hash index trỏ tới byte offset trong file. | tr. 72 |
+| **Hash** **(G)** | Hàm băm | Hàm biến input thành một số trông ngẫu nhiên; cùng input luôn cho cùng output; hai input khác nhau có thể trùng output (va chạm). | tr. 75, 555 |
+| **Byte offset** | Vị trí byte | Vị trí trong file nơi value bắt đầu. | tr. 72 |
+| **Bitcask** | — | Storage engine mặc định của Riak: hash index trong bộ nhớ + log trên đĩa. Mọi key phải vừa RAM. | tr. 72–73 |
+| **Segment** | Đoạn | Một file log có kích thước giới hạn. Đầy thì đóng, ghi sang segment mới. | tr. 73 |
+| **Compaction** | Nén gọn | Bỏ key trùng trong log, chỉ giữ cập nhật mới nhất của mỗi key. | tr. 73 |
+| **Merge (segment)** | Gộp | Gộp nhiều segment thành một segment mới, thường cùng lúc với compaction, chạy ở nền. | tr. 73–74 |
+| **Tombstone** | Bia mộ | Bản ghi xóa đặc biệt nối vào log. Báo quá trình merge bỏ các giá trị cũ của key đã xóa. | tr. 74 |
+| **Checksum** | Mã kiểm tra | Dùng để phát hiện và bỏ qua bản ghi ghi dở khi crash. | tr. 75 |
+| **Sequential vs random write** | Ghi tuần tự / ngẫu nhiên | Ghi tuần tự nhanh hơn nhiều, nhất là trên ổ đĩa từ. | tr. 75 |
+| **Range query** | Truy vấn khoảng | Quét mọi key giữa một giá trị nhỏ nhất và một giá trị lớn nhất. Hash index không làm hiệu quả được. | tr. 75, 79 |
+| **SSTable** (*Sorted String Table*) | Bảng chuỗi đã sắp xếp | Segment trong đó cặp key-value sắp theo key, mỗi key một lần. Merge kiểu mergesort, index thưa, nén theo khối. | tr. 76–77 |
+| **Sparse index** | Index thưa | Index trong bộ nhớ chỉ chứa offset của một số key (vd mỗi vài KB một key). | tr. 77 |
+| **Memtable** | Bảng trong bộ nhớ | Cây cân bằng trong bộ nhớ (red-black, AVL) nhận lượt ghi, được flush thành SSTable khi vượt vài MB. | tr. 78 |
+| **LSM-tree** (*Log-Structured Merge-Tree*) | Cây gộp cấu trúc log | Cấu trúc index gồm memtable và chuỗi SSTable được merge nền (O'Neil và cộng sự). LevelDB, RocksDB, Cassandra, HBase. | tr. 78–79 |
+| **Term dictionary / postings list** | Từ điển thuật ngữ / danh sách xuất hiện | Trong full-text index: key là từ, value là danh sách ID document chứa từ đó. Lucene lưu trong file kiểu SSTable. | tr. 79 |
+| **Bloom filter** | Bộ lọc Bloom | Cấu trúc tiết kiệm bộ nhớ xấp xỉ một tập hợp. Cho biết key **không có**, tránh đọc đĩa vô ích. | tr. 79 |
+| **Size-tiered / leveled compaction** | Compaction theo kích thước / theo tầng | Hai chiến lược compaction. Size-tiered: SSTable nhỏ, mới merge vào cái lớn, cũ. Leveled: chia khoảng key thành SSTable nhỏ theo level, từng bước hơn, ít tốn đĩa. | tr. 79 |
+
+### B-tree và so sánh
+
+| Thuật ngữ | Tiếng Việt | Giải thích | Trang |
+| --- | --- | --- | --- |
+| **B-tree** | Cây B | Cấu trúc index phổ biến nhất (1970). Cây các page cố định, giữ key có thứ tự, ghi đè page tại chỗ. | tr. 79–81 |
+| **Page / block** | Trang / khối | Đơn vị kích thước cố định (thường 4 KB) mà B-tree đọc ghi mỗi lần. | tr. 80 |
+| **Root / leaf page** | Trang gốc / trang lá | Root là nơi bắt đầu mọi lượt tra. Leaf chứa từng key với value (hoặc tham chiếu tới value). | tr. 80–81 |
+| **Branching factor** | Hệ số phân nhánh | Số tham chiếu tới page con trong một page; thường vài trăm. | tr. 81 |
+| **Page split** | Tách trang | Page đầy khi chèn thì tách thành hai page đầy một nửa, page cha được cập nhật. Giữ cây cân bằng, độ sâu O(log n). | tr. 81 |
+| **WAL** (*write-ahead log*, *redo log*) | Nhật ký ghi trước | File chỉ ghi nối thêm; mọi thay đổi B-tree ghi vào đây trước khi áp dụng, để phục hồi sau crash. | tr. 82 |
+| **Orphan page** | Trang mồ côi | Page không thuộc page cha nào, xuất hiện khi crash giữa lúc tách page. | tr. 82 |
+| **Latch** | Chốt | Khóa nhẹ bảo vệ cấu trúc dữ liệu của cây khi nhiều thread truy cập. | tr. 82 |
+| **Copy-on-write** | Sao chép khi ghi | Ghi page đã sửa ra chỗ mới và tạo phiên bản page cha mới, thay cho ghi đè + WAL (vd LMDB). | tr. 82–83 |
+| **B+ tree** | — | Biến thể viết tắt key ở page bên trong để tăng branching factor; thường không được phân biệt với B-tree. | tr. 83 |
+| **Fractal tree** | — | Biến thể B-tree mượn ý tưởng log-structured để giảm seek đĩa. | tr. 83 |
+| **Write amplification** | Khuếch đại ghi | Một lần ghi vào database dẫn tới nhiều lần ghi xuống đĩa trong vòng đời dữ liệu. Quan trọng với workload ghi nhiều và SSD. | tr. 84 |
+| **Fragmentation** | Phân mảnh | Dung lượng bị bỏ trống trong page (sau khi tách page, hoặc hàng không vừa). B-tree bị nhiều hơn LSM-tree. | tr. 84 |
+
+### Các loại index khác và in-memory
+
+| Thuật ngữ | Tiếng Việt | Giải thích | Trang |
+| --- | --- | --- | --- |
+| **Primary key** **(G)** | Khóa chính | Giá trị định danh duy nhất một bản ghi; thường do hệ thống sinh ra. | tr. 85, 556 |
+| **Secondary index** **(G)** | Chỉ mục phụ | Cấu trúc phụ duy trì cạnh dữ liệu chính để tìm bản ghi theo điều kiện khác. Key không duy nhất: value là danh sách ID hàng, hoặc nối ID hàng vào key. | tr. 85–86, 557 |
+| **Heap file** | Tệp heap | Nơi lưu hàng không theo thứ tự; index chỉ chứa tham chiếu tới vị trí trong heap. | tr. 86 |
+| **Forwarding pointer** | Con trỏ chuyển tiếp | Để lại ở vị trí cũ trong heap khi hàng phải dời sang chỗ mới vì to ra. | tr. 86 |
+| **Clustered index** | Chỉ mục cụm | Lưu hàng ngay trong index. Primary key của InnoDB luôn là clustered index. | tr. 86 |
+| **Covering index / index with included columns** | Chỉ mục phủ | Lưu thêm một số cột trong index để vài truy vấn trả lời chỉ bằng index. | tr. 86 |
+| **Concatenated index** | Chỉ mục ghép | Index nhiều cột bằng cách nối cột này sau cột kia, như danh bạ (họ, tên). Chỉ giúp khi lọc theo cột đầu. | tr. 87 |
+| **Multi-dimensional index** | Chỉ mục nhiều chiều | Truy vấn nhiều cột cùng lúc, nhất là dữ liệu không gian. | tr. 87 |
+| **Space-filling curve** | Đường cong lấp không gian | Biến tọa độ nhiều chiều thành một số để dùng B-tree thường. | tr. 87 |
+| **R-tree** | Cây R | Spatial index chuyên dụng (vd PostGIS trên GiST của PostgreSQL). | tr. 87 |
+| **Fuzzy query** | Truy vấn mờ | Tìm key tương tự (sai chính tả, đồng nghĩa…), cần kỹ thuật khác index chính xác. | tr. 88 |
+| **Edit distance** | Khoảng cách sửa | Số chữ cái được thêm, bớt hoặc thay để biến từ này thành từ kia. | tr. 88 |
+| **Finite state automaton / trie / Levenshtein automaton** | Ôtômat hữu hạn / cây tiền tố | Cấu trúc Lucene dùng làm index trong bộ nhớ cho term dictionary, hỗ trợ tìm từ trong một edit distance. | tr. 88 |
+| **In-memory database** | CSDL trong bộ nhớ | Phục vụ đọc hoàn toàn từ bộ nhớ; đĩa (nếu có) chỉ là log để bền. Nhanh vì tránh chi phí mã hóa cho đĩa. | tr. 88–89 |
+| **Durable** **(G)** | Bền vững | Lưu dữ liệu sao cho tin rằng không mất dù có nhiều loại sự cố. | tr. 88–89, 554 |
+| **Cache** **(G)** | Bộ đệm | Thành phần nhớ dữ liệu dùng gần đây để đọc lại nhanh hơn; không đầy đủ, thiếu thì phải lấy từ nơi lưu chậm hơn. | tr. 89, 553 |
+| **Anti-caching** | Chống cache | Đẩy dữ liệu ít dùng nhất từ bộ nhớ xuống đĩa và tải lại khi cần, ở mức từng bản ghi. Index vẫn phải vừa RAM. | tr. 89–90 |
+| **NVM** (*non-volatile memory*) | Bộ nhớ không mất dữ liệu khi mất điện | Công nghệ có thể làm thay đổi thiết kế storage engine trong tương lai. | tr. 90 |
+
+### Analytics và lưu trữ theo cột
+
+| Thuật ngữ | Tiếng Việt | Giải thích | Trang |
+| --- | --- | --- | --- |
+| **Transaction** | Giao dịch | Một nhóm thao tác đọc và ghi tạo thành một đơn vị logic. Không nhất thiết có ACID. | tr. 90 |
+| **OLTP** **(G)** | Xử lý giao dịch trực tuyến | Mẫu truy cập: truy vấn nhanh đọc hoặc ghi số ít bản ghi, thường theo key. | tr. 90, 556 |
+| **OLAP** **(G)** | Xử lý phân tích trực tuyến | Mẫu truy cập: tổng hợp (count, sum, average) trên số lượng lớn bản ghi. | tr. 91, 556 |
+| **Business intelligence** | Trí tuệ kinh doanh | Báo cáo từ truy vấn phân tích giúp ban lãnh đạo ra quyết định. | tr. 91 |
+| **Data warehouse** **(G)** | Kho dữ liệu | Database riêng kết hợp dữ liệu từ nhiều hệ thống OLTP, chuẩn bị cho phân tích. | tr. 91–92, 554 |
+| **ETL** **(G)** (*Extract–Transform–Load*) | Trích xuất–Biến đổi–Nạp | Lấy dữ liệu từ database nguồn, biến đổi sang dạng hợp với phân tích, nạp vào data warehouse. | tr. 92, 554 |
+| **Drill-down / slicing and dicing** | Đi sâu / cắt lát | Thao tác khám phá dữ liệu trong công cụ phân tích. | tr. 93 |
+| **SQL-on-Hadoop** | — | Dự án mã nguồn mở chạy SQL phân tích: Hive, Spark SQL, Impala, Presto, Tajo, Drill. | tr. 93 |
+| **Star schema / dimensional modeling** | Lược đồ hình sao | Fact table ở giữa, dimension table bao quanh. | tr. 93–95 |
+| **Fact table** | Bảng sự kiện | Mỗi hàng là một sự kiện; gồm thuộc tính và foreign key tới dimension. Có thể cực lớn. | tr. 93–94 |
+| **Dimension table** | Bảng chiều | Mô tả ai, cái gì, ở đâu, khi nào, như thế nào, tại sao của sự kiện. Ngày giờ cũng thường là dimension. | tr. 94–95 |
+| **Snowflake schema** | Lược đồ bông tuyết | Biến thể star schema: dimension chia tiếp thành subdimension. Chuẩn hóa hơn, nhưng star đơn giản hơn cho analyst. | tr. 95 |
+| **Row-oriented storage** | Lưu theo hàng | Mọi giá trị của một hàng nằm cạnh nhau. Cách của hầu hết database OLTP. | tr. 96 |
+| **Column-oriented storage** | Lưu theo cột | Mọi giá trị của một cột nằm cạnh nhau, mỗi cột một file; truy vấn chỉ đọc cột cần. | tr. 96–97 |
+| **Parquet** | — | Định dạng lưu theo cột hỗ trợ mô hình document, dựa trên Dremel của Google. | tr. 96 |
+| **Bitmap encoding** | Mã hóa bitmap | Mỗi giá trị khác nhau của cột thành một bitmap, mỗi hàng một bit. Lọc bằng AND, OR từng bit. | tr. 97–99 |
+| **Run-length encoding (RLE)** | Mã hóa độ dài chuỗi | Lưu số lượng phần tử lặp liên tiếp thay vì từng phần tử. Nén bitmap thưa và cột đã sắp xếp. | tr. 98, 100 |
+| **Column family** | Họ cột | Khái niệm của Bigtable, Cassandra, HBase. Gây hiểu lầm: thực chất vẫn lưu theo hàng. | tr. 99 |
+| **Vectorized processing** | Xử lý vector hóa | Xử lý khúc dữ liệu cột nén vừa L1 cache trong vòng lặp chặt, toán tử chạy trực tiếp trên dữ liệu nén. | tr. 99 |
+| **SIMD** | — | *Single-instruction-multi-data*: lệnh CPU xử lý nhiều dữ liệu cùng lúc. | tr. 99 |
+| **Sort key** | Khóa sắp xếp | Cột dùng để sắp xếp hàng trong column store; vừa làm index vừa giúp nén. | tr. 100 |
+| **Materialize** **(G)** | Vật chất hóa | Tính ngay và ghi ra kết quả, thay vì tính theo yêu cầu. | tr. 101, 556 |
+| **Materialized view / virtual view** | View vật chất hóa / view ảo | Materialized: bản sao kết quả truy vấn trên đĩa, phải cập nhật khi dữ liệu gốc đổi. Virtual: lối tắt, mở rộng thành truy vấn gốc lúc chạy. | tr. 101–102 |
+| **Data cube / OLAP cube** | Khối dữ liệu | Lưới tổng hợp theo các dimension; một loại materialized view. Đọc rất nhanh nhưng kém linh hoạt. | tr. 102–103 |
+
+### Bổ sung ngoài sách (liên quan chương 3)
+
+| Thuật ngữ | Giải thích | Liên quan đến |
+| --- | --- | --- |
+| **False positive (Bloom filter)** | Bloom filter có thể báo "có thể có" cho key thực ra không có, nhưng không bao giờ báo sai rằng key không có. | Performance optimizations |
+| **Z-order curve / Hilbert curve** | Hai space-filling curve hay dùng: điểm gần nhau trong không gian thường có số gần nhau. | Multi-dimensional indexes |

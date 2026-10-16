@@ -2,7 +2,7 @@
 
 Tệp này gom các nguyên lý System Design rút ra từ từng chương và liên kết về phần giải thích chi tiết. Mỗi nguyên lý ghi rõ nguồn trong sách (trang in, ấn bản thứ nhất 2017). Cột "Sẽ gặp lại" chỉ dựa trên tham chiếu chéo và mục lục của sách. Nội dung các chương đó sẽ được kiểm chứng khi học tới.
 
-Đã cập nhật đến: **Chương 2**.
+Đã cập nhật đến: **Chương 3**.
 
 ## Bản đồ tổng quan
 
@@ -19,6 +19,9 @@ flowchart LR
     DM --> P18["P18–P19<br/>Schema, locality"]
     DM --> P20["P20–P21<br/>Ngôn ngữ truy vấn"]
     P20 -.->|"abstraction<br/>giúp tiến hóa"| P12
+    ST["Lưu trữ và truy xuất<br/>(chương 3)"] --> P22["P22–P25<br/>Index, storage engine OLTP"]
+    ST --> P26["P26–P29<br/>Analytics, lưu theo cột"]
+    P22 -.->|"đọc nhanh,<br/>ghi chậm"| P17
 ```
 
 ## Chương 1 — Reliable, Scalable, and Maintainable Applications
@@ -127,3 +130,37 @@ flowchart LR
 **P21. Code chạy trong framework phân tán nên là hàm thuần.** Không side effect và không truy vấn thêm, để framework chạy ở bất kỳ đâu, theo thứ tự bất kỳ, và chạy lại khi lỗi. Nhưng API cấp thấp kiểu MapReduce khó dùng và ít cơ hội tối ưu, nên hệ thống thường tiến hóa về một ngôn ngữ declarative (aggregation pipeline).
 - Nguồn: tr. 46–48 · [chapter-02 B3.2](chapter-02.md#mapreduce)
 - Sẽ gặp lại: MapReduce, Chương 10 (tr. 46)
+
+## Chương 3 — Storage and Retrieval
+
+### Index và storage engine cho OLTP
+
+**P22. Mỗi index làm đọc nhanh hơn và ghi chậm hơn; chọn index theo truy vấn thực tế.** Index là dữ liệu dẫn xuất: thêm hay bỏ không đổi nội dung, chỉ đổi hiệu năng. Ghi nối vào file là cách ghi nhanh nhất; mọi index thêm chi phí cho mỗi lần ghi. Clustered và covering index là thêm một mức nhân bản: đọc nhanh hơn nữa, tốn dung lượng và chậm ghi hơn nữa.
+- Nguồn: tr. 71, 86–87 · [chapter-03 B1.3](chapter-03.md#index-tradeoff), [B6.2](chapter-03.md#clustered-index), [D4](chapter-03.md#d4)
+
+**P23. Biến ghi ngẫu nhiên thành ghi tuần tự, và dùng dữ liệu bất biến để đơn giản hóa phục hồi.** Log chỉ ghi nối thêm và segment bất biến cho throughput ghi cao, phục hồi crash và đồng thời đơn giản, không phân mảnh. Cái giá là phải compaction và merge ở nền.
+- Nguồn: tr. 75, 103 · [chapter-03 B2.4](chapter-03.md#append-only), [B3](chapter-03.md#b3)
+- Sẽ gặp lại: log trong replication (Chương 5) và event log (Chương 11), theo Glossary tr. 556
+
+**P24. Ghi trước vào log rồi mới sửa cấu trúc chính.** Memtable của LSM-tree và page của B-tree đều có thể mất hoặc hỏng khi crash; một log chỉ ghi nối thêm (log phục hồi memtable, WAL của B-tree) cho phép dựng lại trạng thái nhất quán.
+- Nguồn: tr. 78, 82 · [chapter-03 B3.2](chapter-03.md#memtable), [B4.3](chapter-03.md#wal)
+
+**P25. Chọn LSM-tree hay B-tree theo workload, và benchmark với workload thật.** LSM-tree thường ghi nhanh hơn, nén tốt hơn, nhưng compaction có thể làm độ trễ percentile cao tăng vọt và có thể không theo kịp (cần giám sát). B-tree đọc ổn định hơn, mỗi key một chỗ nên hợp với giao dịch mạnh. Kết quả benchmark rất nhạy với chi tiết workload.
+- Nguồn: tr. 83–85 · [chapter-03 B5](chapter-03.md#b5), [D2](chapter-03.md#d2)
+- Liên hệ: tail latency và đo percentile ở P9, P10
+- Sẽ gặp lại: khóa trên khoảng key, Chương 7 (tr. 85)
+
+### Analytics và lưu trữ theo cột
+
+**P26. Tách workload phân tích khỏi workload giao dịch.** OLTP và OLAP có mẫu truy cập, người dùng, kích thước dữ liệu và nút thắt (seek đĩa so với băng thông đĩa) khác nhau. Truy vấn phân tích nặng làm hại giao dịch, nên đưa dữ liệu sang data warehouse qua ETL. Công ty nhỏ có thể chưa cần.
+- Nguồn: tr. 90–93, 103 · [chapter-03 B7](chapter-03.md#b7), [D7](chapter-03.md#d7)
+- Sẽ gặp lại: batch processing, Chương 10 (tr. 90)
+
+**P27. Mô hình hóa dữ liệu phân tích quanh các sự kiện: star schema.** Ghi từng sự kiện riêng lẻ vào fact table để phân tích linh hoạt nhất; dimension table mô tả ai, cái gì, ở đâu, khi nào. Star thường được ưa hơn snowflake vì đơn giản cho analyst.
+- Nguồn: tr. 93–95 · [chapter-03 B7.4](chapter-03.md#star-schema)
+
+**P28. Với quét lượng lớn dữ liệu, mã hóa thật gọn quan trọng hơn index.** Lưu theo cột chỉ đọc cột cần, nén bằng bitmap và RLE, tận dụng CPU cache bằng vectorized processing, và dùng sort order như index. Ghi được xử lý theo kiểu LSM: gom trong bộ nhớ rồi merge hàng loạt.
+- Nguồn: tr. 95–101, 104 · [chapter-03 B8](chapter-03.md#b8), [D8](chapter-03.md#d8)
+
+**P29. Tổng hợp tính sẵn để tăng tốc, nhưng giữ dữ liệu thô.** Materialized view và data cube làm một số truy vấn rất nhanh, nhưng phải cập nhật khi dữ liệu gốc đổi và không trả lời được câu hỏi ngoài các dimension đã chọn. Cùng đánh đổi với denormalization (P17) và cache timeline Twitter (P8).
+- Nguồn: tr. 101–103 · [chapter-03 B8.7](chapter-03.md#materialized-views), [D9](chapter-03.md#d9)
